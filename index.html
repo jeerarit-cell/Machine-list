@@ -43,17 +43,18 @@
         <!-- สถานะกำลังโหลด -->
         <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>
 
-         <!-- ช่องค้นหารหัสเครื่องจักร -->
-         <div style="margin: 20px 0; text-align: center;">
-            <input type="text" id="searchInput" placeholder="พิมพ์ค้นหารหัสเครื่องจักร (เช่น SW-CT-LASER-001)..." style="width: 100%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 8px;">
-      </div>
-        
+    
         <!-- หน้า Home -->
         <div id="viewHome" style="display: none;">
             <h2>🏭 ระบบจัดการเครื่องจักร (Machine List)</h2>
             <p style="color: #64748b;">กรุณาเลือกประเภทเครื่องจักรที่คุณต้องการตรวจสอบ:</p>
             <div id="categoryContainer" class="category-grid"></div>
         </div>
+        
+         <!-- ช่องค้นหารหัสเครื่องจักร -->
+         <div style="margin: 20px 0; text-align: center;">
+            <input type="text" id="searchInput" placeholder="พิมพ์ค้นหารหัสเครื่องจักร (เช่น SW-CT-LASER-001)..." style="width: 100%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 8px;">
+      </div>
 
         <!-- หน้ารายการเครื่องจักร -->
         <div id="viewMachines" style="display: none;">
