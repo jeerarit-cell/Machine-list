@@ -45,6 +45,12 @@
       gap: 16px;
       margin-top: 20px;
     }
+    .machine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px; /* เพิ่มส่วนนี้เข้ามาแทนของเดิม */
+    }
     .category-card {
       background: #f8f9fa;
       border: 2px solid #e2e8f0;
@@ -185,10 +191,10 @@
     let currentCategory = '';
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (GOOGLE_SHEET_CSV_URL.includes('https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv')) {
-        document.getElementById('loadingStatus').innerHTML = '⚠️ กรุณานำ URL ลิงก์ CSV จาก Google Sheets มาใส่ในตัวแปร GOOGLE_SHEET_CSV_URL ก่อนครับ';
-        return;
-      }
+      if (GOOGLE_SHEET_CSV_URL.includes('ใส่ลิงก์ CSV ของคุณที่นี่')) {
+    document.getElementById('loadingStatus').innerHTML = '⚠️ กรุณานำ URL ลิงก์ CSV จาก Google Sheets มาใส่ในตัวแปร GOOGLE_SHEET_CSV_URL ก่อนครับ';
+    return;
+}
 
       Papa.parse(GOOGLE_SHEET_CSV_URL, {
         download: true,
