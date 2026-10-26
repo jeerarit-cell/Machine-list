@@ -152,12 +152,12 @@
                 const brand = m['ยี่ห้อ/Brand'] || '';
                 const model = m['รุ่น/Model'] || '';
 
-                return `
-                    <div class="machine-card" onclick="showDetail('${id}')">
-                        <img id="img-${id}" src="https://via.placeholder.com/200x120?text=Loading..." class="machine-img" alt="Machine">
-                        <h4>${id}</h4>
-                        <p>${brand} ${model}</p>
-                    </div>
+        // ตรงฟังก์ชันสร้างการ์ดเดิมของคุณ ให้เปลี่ยนตรง onclick ให้ส่งรูปไปด้วย
+             return `
+         <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
+           <img id="img-${id}" src="..." class="machine-img" alt="Machine">
+            ...
+           </div>
                 `;
             }).join('');
 
@@ -194,29 +194,40 @@
             }
         }
 
-        function showDetail(machineId) {
-            showView('viewDetail');
-            const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
-            const container = document.getElementById('detailContainer');
+       function showDetail(machineId, imageUrl) {
+    showView('viewDetail');
+    const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
+    const container = document.getElementById('detailContainer');
+    
+    // เอารูปที่มีอยู่แล้วจากหน้าลิสต์ มาแปะโชว์บนหน้า Detail ทันที! (ไม่ต้องยิงไป Apps Script ใหม่)
+    const imgElement = document.getElementById('detailMachineImage');
+    if (imageUrl && imageUrl !== '') {
+        imgElement.src = imageUrl;
+    } else if (imageCache[machineId]) {
+        imgElement.src = imageCache[machineId];
+    } else {
+        imgElement.src = 'https://via.placeholder.com/300x200?text=No+Image';
+    }
 
-            if (!machine) {
-                container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
-                return;
-            }
+    if (!machine) {
+        container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
+        return;
+    }
 
-            let detailHtml = '<div class="detail-box">';
-            for (let key in machine) {
-                if (key === 'image') continue;
-                detailHtml += `
-                    <div class="detail-row">
-                        <div class="detail-label">${key}</div>
-                        <div class="detail-value">${machine[key] || '-'}</div>
-                    </div>
-                `;
-            }
-            detailHtml += '</div>';
-            container.innerHTML = detailHtml;
-        }
+    // สร้างตารางรายละเอียดข้อความต่อด้านล่างตามปกติ
+    let detailHtml = '<div class="detail-box">';
+    for (let key in machine) {
+        if (key === 'image') continue;
+        detailHtml += `
+            <div class="detail-row">
+                <div class="detail-label">${key}</div>
+                <div class="detail-value">${machine[key] || '-'}</div>
+            </div>
+        `;
+    }
+    detailHtml += '</div>';
+    container.innerHTML = detailHtml;
+}
 
         function showView(viewId) {
             document.getElementById('viewHome').style.display = 'none';
