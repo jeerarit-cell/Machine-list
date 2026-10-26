@@ -250,8 +250,26 @@
         const brand = m['ยี่ห้อ/Brand'] || '';
         const model = m['รุ่น/Model'] || '';
         // ถ้าคอลัมน์ image เป็นลิงก์รูป ให้แสดงรูป ถ้าไม่มีให้ใช้รูปเทมเพลต
-        const imgSrc = (m['image'] && m['image'].startsWith('http')) ? m['image'] : 'https://via.placeholder.com/200x120?text=No+Image';
+        // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link สำหรับแสดงรูปภาพ
+    function getDirectImageUrl(url) {
+    if (!url || !url.startsWith('http')) return 'https://via.placeholder.com/200x120?text=No+Image';
+    
+    // ถ้าเป็นลิงก์ Google Drive แบบแชร์ทั่วไป ให้ดึง ID มาแปลงเป็นลิงก์ภาพตรง
+    if (url.includes('drive.google.com')) {
+        let fileId = '';
+        if (url.includes('/file/d/')) {
+            fileId = url.split('/file/d/')[1].split('/')[0];
+        } else if (url.includes('id=')) {
+            fileId = url.split('id=')[1].split('&')[0];
+        }
+        if (fileId) {
+            return `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+    }
+    return url; // ถ้าเป็นลิงก์เว็บอื่นอยู่แล้ว ให้ใช้ลิงก์เดิมได้เลย
+}
 
+    const imgSrc = getDirectImageUrl(m['image']);
         return `
           <div class="machine-card" onclick="showDetail('${id}')">
             <img src="${imgSrc}" class="machine-img" alt="Machine">
