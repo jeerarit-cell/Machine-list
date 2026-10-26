@@ -251,7 +251,8 @@
         const model = m['รุ่น/Model'] || '';
         // ถ้าคอลัมน์ image เป็นลิงก์รูป ให้แสดงรูป ถ้าไม่มีให้ใช้รูปเทมเพลต
         // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link สำหรับแสดงรูปภาพ
-    function getDirectImageUrl(url) {
+    // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link สำหรับแสดงรูปภาพ (ย้ายมาไว้ข้างนอกสุด)
+function getDirectImageUrl(url) {
     if (!url || !url.startsWith('http')) return 'https://via.placeholder.com/200x120?text=No+Image';
     
     // ถ้าเป็นลิงก์ Google Drive แบบแชร์ทั่วไป ให้ดึง ID มาแปลงเป็นลิงก์ภาพตรง
