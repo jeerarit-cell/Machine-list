@@ -50,6 +50,11 @@
             <div id="categoryContainer" class="category-grid"></div>
         </div>
 
+          <!-- ช่องค้นหารหัสเครื่องจักร -->
+         <div style="margin: 20px 0; text-align: center;">
+            <input type="text" id="searchInput" placeholder="พิมพ์ค้นหารหัสเครื่องจักร (เช่น SW-CT-LASER-001)..." style="width: 100%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 8px;">
+      </div>
+
         <!-- หน้ารายการเครื่องจักร -->
         <div id="viewMachines" style="display: none;">
             <button class="back-btn" onclick="goToHome()">⬅️ กลับหน้าหลัก</button>
@@ -63,6 +68,22 @@
             <h2>📋 รายละเอียดเครื่องจักร</h2>
             <div id="detailContainer"></div>
         </div>
+
+        <!-- ส่วนแสดงรูปภาพในหน้าดีเทลรายละเอียดเครื่องจักร -->
+<div id="machineDetailModal" style="display: none; ..."> <!-- (โครงสร้างหน้าต่างรายละเอียดเดิมของคุณ) -->
+    <div class="modal-content" style="text-align: center;">
+        
+        <!-- แท็กสำหรับแสดงรูปเครื่องจักร -->
+        <div style="margin-bottom: 15px;">
+            <img id="detailMachineImage" src="" alt="กำลังโหลดรูปเครื่องจักร..." style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 1px solid #ddd;">
+        </div>
+
+        <!-- รายละเอียดข้อความเดิมของคุณ -->
+        <div id="machineDetailText"></div>
+        
+        <button onclick="closeModal()">ปิด</button>
+    </div>
+</div>
     </div>
 
     <script>
@@ -203,6 +224,33 @@
 
         function goToHome() { initHome(); }
         function backToMachines() { selectCategory(currentCategory); }
+        // ตัวแปรเก็บลิงก์ Web App ของคุณจาก Apps Script
+const WEB_APP_URL = "ใส่_URL_Web_App_ของคุณที่ลงท้ายด้วย_exec_ตรงนี้";
+
+function showMachineDetail(machineId) {
+    // 1. เปิดหน้าต่างรายละเอียด (ตามโค้ดเดิมของคุณ)
+    document.getElementById("machineDetailModal").style.display = "block";
+    
+    // 2. ตั้งค่าข้อความกำลังโหลดรูป
+    const imgElement = document.getElementById("detailMachineImage");
+    imgElement.src = "";
+    imgElement.alt = "กำลังโหลดรูปเครื่องจักร...";
+
+    // 3. ยิงไปขอรูปจาก Apps Script Web App ที่เราเพิ่งทำสำเร็จ
+    fetch(`${WEB_APP_URL}?id=${machineId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.url) {
+                imgElement.src = data.url; // เอาลิงก์ lh3 มาใส่รูปทันที
+            } else {
+                imgElement.alt = "ไม่พบรูปภาพเครื่องจักรนี้";
+            }
+        })
+        .catch(error => {
+            console.error("Error loading image:", error);
+            imgElement.alt = "เกิดข้อผิดพลาดในการโหลดรูป";
+        });
+}
     </script>
 </body>
 </html>
