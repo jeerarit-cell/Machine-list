@@ -1,330 +1,189 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Machine List - ระบบจัดการเครื่องจักร</title>
-  
-  <!-- PapaParse สำหรับแปลง CSV จาก Google Sheets -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    h2, h3 {
-      color: #1a73e8;
-      margin-top: 0;
-    }
-    .status-box {
-      text-align: center;
-      padding: 40px;
-      color: #666;
-      font-size: 16px;
-    }
-    
-    /* หน้า Home: ปุ่มเลือกประเภท */
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-    .machine-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 20px; /* เพิ่มส่วนนี้เข้ามาแทนของเดิม */
-    }
-    .category-card {
-      background: #f8f9fa;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .category-card:hover {
-      border-color: #1a73e8;
-      background: #f0f4ff;
-      transform: translateY(-2px);
-    }
-    .category-card h3 {
-      margin: 0 0 8px 0;
-      color: #1e293b;
-    }
-    .category-card span {
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    /* หน้ารายการเครื่องจักร (การ์ดแสดงรหัส + รูป) */
-    .machine-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-    .machine-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-      transition: all 0.2s;
-    }
-    .machine-card:hover {
-      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-      border-color: #cbd5e1;
-    }
-    .machine-img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 6px;
-      background: #f1f5f9;
-      margin-bottom: 10px;
-    }
-    .machine-card h4 {
-      margin: 0 0 6px 0;
-      color: #0f172a;
-    }
-    .machine-card p {
-      margin: 0;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    /* หน้ารายละเอียด */
-    .detail-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 15px;
-    }
-    .detail-row {
-      display: flex;
-      padding: 8px 0;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .detail-row:last-child {
-      border-bottom: none;
-    }
-    .detail-label {
-      font-weight: 600;
-      width: 35%;
-      color: #475569;
-    }
-    .detail-value {
-      width: 65%;
-      color: #1e293b;
-    }
-
-    /* ปุ่มย้อนกลับ */
-    .back-btn {
-      background: #64748b;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-    .back-btn:hover {
-      background: #475569;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine List - ระบบจัดการเครื่องจักร</title>
+    <!-- PapaParse สำหรับแปลง CSV จาก Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h2, h3 { color: #1a73e8; margin-top: 0; }
+        .status-box { text-align: center; padding: 40px; color: #666; font-size: 16px; }
+        
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+        .machine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+        
+        .category-card { background: #f8f9fa; border: 2px solid #e2e8f0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .category-card:hover { border-color: #1a73e8; background: #f0f4ff; transform: translateY(-2px); }
+        .category-card h3 { margin: 0 0 8px 0; color: #1e293b; }
+        .category-card span { color: #64748b; font-size: 14px; }
+        
+        .machine-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; }
+        .machine-card:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+        .machine-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; background: #f1f5f9; margin-bottom: 10px; }
+        .machine-card h4 { margin: 0 0 6px 0; color: #0f172a; }
+        .machine-card p { margin: 0; font-size: 13px; color: #64748b; }
+        
+        .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .detail-row { display: flex; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-weight: 600; width: 35%; color: #475569; }
+        .detail-value { width: 65%; color: #1e293b; }
+        
+        .back-btn { background: #64748b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; font-size: 14px; }
+        .back-btn:hover { background: #475569; }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- สถานะกำลังโหลด -->
-    <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>
+    <div class="container">
+        <!-- สถานะกำลังโหลด -->
+        <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>
 
-    <!-- ส่วนที่ 1: หน้า Home (เลือกประเภทเครื่อง) -->
-    <div id="viewHome" style="display: none;">
-      <h2>🏭 ระบบจัดการเครื่องจักร (Machine List)</h2>
-      <p style="color: #64748b;">กรุณาเลือกประเภทเครื่องจักรที่คุณต้องการตรวจสอบ:</p>
-      <div id="categoryContainer" class="category-grid"></div>
-    </div>
-
-    <!-- ส่วนที่ 2: หน้ารายการรหัสเครื่องในประเภทนั้นๆ -->
-    <div id="viewMachines" style="display: none;">
-      <button class="back-btn" onclick="goToHome()">⬅️ กลับหน้าหลัก</button>
-      <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
-      <div id="machineContainer" class="machine-grid"></div>
-    </div>
-
-    <!-- ส่วนที่ 3: หน้ารายละเอียดเครื่องจักร -->
-    <div id="viewDetail" style="display: none;">
-      <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
-      <h2>📋 รายละเอียดเครื่องจักร</h2>
-      <div id="detailContainer"></div>
-    </div>
-  </div>
-
-  <script>
-    // 🔗 แทนที่ด้วยลิงก์ CSV จาก Google Sheets ของคุณ
-    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
-
-    let allMachines = [];
-    let currentCategory = '';
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (GOOGLE_SHEET_CSV_URL.includes('ใส่ลิงก์ CSV ของคุณที่นี่')) {
-    document.getElementById('loadingStatus').innerHTML = '⚠️ กรุณานำ URL ลิงก์ CSV จาก Google Sheets มาใส่ในตัวแปร GOOGLE_SHEET_CSV_URL ก่อนครับ';
-    return;
-}
-
-      Papa.parse(GOOGLE_SHEET_CSV_URL, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          allMachines = results.data;
-          if (allMachines.length > 0) {
-            document.getElementById('loadingStatus').style.display = 'none';
-            initHome();
-          } else {
-            document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
-          }
-        },
-        error: function(err) {
-          document.getElementById('loadingStatus').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
-          console.error(err);
-        }
-      });
-    });
-
-    // 1. ฟังก์ชันแสดงหน้า Home (สรุปประเภทเครื่องจักร)
-    function initHome() {
-      showView('viewHome');
-      const container = document.getElementById('categoryContainer');
-      
-      // นับจำนวนเครื่องแยกตามประเภท
-      const categoryCounts = {};
-      allMachines.forEach(m => {
-        const cat = m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท';
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-      });
-
-      container.innerHTML = Object.keys(categoryCounts).map(cat => `
-        <div class="category-card" onclick="selectCategory('${cat}')">
-          <h3>${cat}</h3>
-          <span>จำนวน ${categoryCounts[cat]} เครื่อง</span>
+        <!-- หน้า Home -->
+        <div id="viewHome" style="display: none;">
+            <h2>🏭 ระบบจัดการเครื่องจักร (Machine List)</h2>
+            <p style="color: #64748b;">กรุณาเลือกประเภทเครื่องจักรที่คุณต้องการตรวจสอบ:</p>
+            <div id="categoryContainer" class="category-grid"></div>
         </div>
-      `).join('');
-    }
 
-    // 2. เมื่อผู้ใช้เลือกประเภทเครื่อง
-    function selectCategory(categoryName) {
-      currentCategory = categoryName;
-      showView('viewMachines');
-      document.getElementById('categoryTitle').innerText = `ประเภท: ${categoryName}`;
+        <!-- หน้ารายการเครื่องจักร -->
+        <div id="viewMachines" style="display: none;">
+            <button class="back-btn" onclick="goToHome()">⬅️ กลับหน้าหลัก</button>
+            <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
+            <div id="machineContainer" class="machine-grid"></div>
+        </div>
 
-      const container = document.getElementById('machineContainer');
-      const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท') === categoryName);
+        <!-- หน้ารายละเอียด -->
+        <div id="viewDetail" style="display: none;">
+            <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
+            <h2>📋 รายละเอียดเครื่องจักร</h2>
+            <div id="detailContainer"></div>
+        </div>
+    </div>
 
-      container.innerHTML = filtered.map(m => {
-        const id = m['รหัสเครื่องจักร'] || 'No ID';
-        const brand = m['ยี่ห้อ/Brand'] || '';
-        const model = m['รุ่น/Model'] || '';
-        // ถ้าคอลัมน์ image เป็นลิงก์รูป ให้แสดงรูป ถ้าไม่มีให้ใช้รูปเทมเพลต
-        // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link สำหรับแสดงรูปภาพ
-    // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link สำหรับแสดงรูปภาพ (ย้ายมาไว้ข้างนอกสุด)
-function getDirectImageUrl(url) {
-    if (!url || !url.startsWith('http')) return 'https://via.placeholder.com/200x120?text=No+Image';
-    
-    // ถ้าเป็นลิงก์ Google Drive แบบแชร์ทั่วไป ให้ดึง ID มาแปลงเป็นลิงก์ภาพตรง
-    if (url.includes('drive.google.com')) {
-        let fileId = '';
-        if (url.includes('/file/d/')) {
-            fileId = url.split('/file/d/')[1].split('/')[0];
-        } else if (url.includes('id=')) {
-            fileId = url.split('id=')[1].split('&')[0];
+    <script>
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
+        let allMachines = [];
+        let currentCategory = '';
+
+        // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link (วางไว้ด้านนอกสุดถูกต้องแล้ว)
+        function getDirectImageUrl(url) {
+            if (!url || !url.startsWith('http')) return 'https://via.placeholder.com/200x120?text=No+Image';
+            if (url.includes('drive.google.com')) {
+                let fileId = '';
+                if (url.includes('/file/d/')) {
+                    fileId = url.split('/file/d/')[1].split('/')[0];
+                } else if (url.includes('id=')) {
+                    fileId = url.split('id=')[1].split('&')[0];
+                }
+                if (fileId) {
+                    return `https://lh3.googleusercontent.com/d/${fileId}`;
+                }
+            }
+            return url;
         }
-        if (fileId) {
-            return `https://lh3.googleusercontent.com/d/${fileId}`;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            Papa.parse(GOOGLE_SHEET_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allMachines = results.data;
+                    if (allMachines.length > 0) {
+                        document.getElementById('loadingStatus').style.display = 'none';
+                        initHome();
+                    } else {
+                        document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
+                    }
+                },
+                error: function(err) {
+                    document.getElementById('loadingStatus').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+                    console.error(err);
+                }
+            });
+        });
+
+        function initHome() {
+            showView('viewHome');
+            const container = document.getElementById('categoryContainer');
+            const categoryCounts = {};
+            
+            allMachines.forEach(m => {
+                const cat = m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท';
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+            });
+
+            container.innerHTML = Object.keys(categoryCounts).map(cat => `
+                <div class="category-card" onclick="selectCategory('${cat}')">
+                    <h3>${cat}</h3>
+                    <span>จำนวน ${categoryCounts[cat]} เครื่อง</span>
+                </div>
+            `).join('');
         }
-    }
-    return url; // ถ้าเป็นลิงก์เว็บอื่นอยู่แล้ว ให้ใช้ลิงก์เดิมได้เลย
-}
 
-    const imgSrc = getDirectImageUrl(m['image']);
-        return `
-          <div class="machine-card" onclick="showDetail('${id}')">
-            <img src="${imgSrc}" class="machine-img" alt="Machine">
-            <h4>${id}</h4>
-            <p>${brand} ${model}</p>
-          </div>
-        `;
-      }).join('');
-    }
+        function selectCategory(categoryName) {
+            currentCategory = categoryName;
+            showView('viewMachines');
+            document.getElementById('categoryTitle').innerText = `ประเภท: ${categoryName}`;
+            const container = document.getElementById('machineContainer');
+            
+            const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท') === categoryName);
 
-    // 3. เมื่อผู้ใช้กดดูรายละเอียดเครื่องนั้นๆ
-    function showDetail(machineId) {
-      showView('viewDetail');
-      const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
-      const container = document.getElementById('detailContainer');
+            container.innerHTML = filtered.map(m => {
+                const id = m['รหัสเครื่องจักร'] || 'No ID';
+                const brand = m['ยี่ห้อ/Brand'] || '';
+                const model = m['รุ่น/Model'] || '';
+                const imgSrc = getDirectImageUrl(m['image']);
 
-      if (!machine) {
-        container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
-        return;
-      }
+                return `
+                    <div class="machine-card" onclick="showDetail('${id}')">
+                        <img src="${imgSrc}" class="machine-img" alt="Machine">
+                        <h4>${id}</h4>
+                        <p>${brand} ${model}</p>
+                    </div>
+                `;
+            }).join('');
+        }
 
-      let detailHtml = '<div class="detail-box">';
-      for (let key in machine) {
-        // ข้ามช่อง image หรือ Link ถ้าไม่อยากโชว์ดิบๆ แต่ถ้าต้องการโชว์เอาออกได้ครับ
-        if (key === 'image') continue; 
-        
-        detailHtml += `
-          <div class="detail-row">
-            <div class="detail-label">${key}</div>
-            <div class="detail-value">${machine[key] || '-'}</div>
-          </div>
-        `;
-      }
-      detailHtml += '</div>';
+        function showDetail(machineId) {
+            showView('viewDetail');
+            const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
+            const container = document.getElementById('detailContainer');
 
-      container.innerHTML = detailHtml;
-    }
+            if (!machine) {
+                container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
+                return;
+            }
 
-    // ฟังก์ชันช่วยสลับหน้าจอ (View Controller)
-    function showView(viewId) {
-      document.getElementById('viewHome').style.display = 'none';
-      document.getElementById('viewMachines').style.display = 'none';
-      document.getElementById('viewDetail').style.display = 'none';
-      document.getElementById(viewId).style.display = 'block';
-      window.scrollTo(0, 0);
-    }
+            let detailHtml = '<div class="detail-box">';
+            for (let key in machine) {
+                if (key === 'image') continue;
+                detailHtml += `
+                    <div class="detail-row">
+                        <div class="detail-label">${key}</div>
+                        <div class="detail-value">${machine[key] || '-'}</div>
+                    </div>
+                `;
+            }
+            detailHtml += '</div>';
+            container.innerHTML = detailHtml;
+        }
 
-    function goToHome() {
-      initHome();
-    }
+        function showView(viewId) {
+            document.getElementById('viewHome').style.display = 'none';
+            document.getElementById('viewMachines').style.display = 'none';
+            document.getElementById('viewDetail').style.display = 'none';
+            document.getElementById(viewId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
 
-    function backToMachines() {
-      selectCategory(currentCategory);
-    }
-  </script>
+        function goToHome() { initHome(); }
+        function backToMachines() { selectCategory(currentCategory); }
+    </script>
 </body>
 </html>
