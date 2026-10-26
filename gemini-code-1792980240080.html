@@ -179,13 +179,13 @@
 
   <script>
     // 🔗 แทนที่ด้วยลิงก์ CSV จาก Google Sheets ของคุณ
-    const GOOGLE_SHEET_CSV_URL = 'วาง_URL_CSV_ของคุณที่นี่';
+    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
 
     let allMachines = [];
     let currentCategory = '';
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (GOOGLE_SHEET_CSV_URL.includes('วาง_URL_CSV')) {
+      if (GOOGLE_SHEET_CSV_URL.includes('https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv')) {
         document.getElementById('loadingStatus').innerHTML = '⚠️ กรุณานำ URL ลิงก์ CSV จาก Google Sheets มาใส่ในตัวแปร GOOGLE_SHEET_CSV_URL ก่อนครับ';
         return;
       }
