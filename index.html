@@ -67,25 +67,12 @@
 
     <script>
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
+        // URL ของ Apps Script สำหรับค้นหารูปภาพจากรหัสเครื่องจักรโดยอัตโนมัติ
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_J9oMU7991R27ATKPBwxqECUmXuiBqDJ9j4HF9pNcbIxH0kGmvHO_FvB_GaFQWIS0/exec';
+        
         let allMachines = [];
         let currentCategory = '';
-
-        // ฟังก์ชันแปลงลิงก์ Google Drive ให้ออกมาเป็น Direct Link (วางไว้ด้านนอกสุดถูกต้องแล้ว)
-        function getDirectImageUrl(url) {
-            if (!url || !url.startsWith('http')) return 'https://via.placeholder.com/200x120?text=No+Image';
-            if (url.includes('drive.google.com')) {
-                let fileId = '';
-                if (url.includes('/file/d/')) {
-                    fileId = url.split('/file/d/')[1].split('/')[0];
-                } else if (url.includes('id=')) {
-                    fileId = url.split('id=')[1].split('&')[0];
-                }
-                if (fileId) {
-                    return `https://lh3.googleusercontent.com/d/${fileId}`;
-                }
-            }
-            return url;
-        }
+        let imageCache = {}; // แคชเก็บรูปรหัสเครื่องจักร เพื่อไม่ต้องโหลดซ้ำ
 
         window.addEventListener('DOMContentLoaded', () => {
             Papa.parse(GOOGLE_SHEET_CSV_URL, {
@@ -134,20 +121,52 @@
             
             const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท') === categoryName);
 
+            // แสดงโครงสร้างการ์ดก่อน (รูปจะทยอยโหลดแบบ Async)
             container.innerHTML = filtered.map(m => {
                 const id = m['รหัสเครื่องจักร'] || 'No ID';
                 const brand = m['ยี่ห้อ/Brand'] || '';
                 const model = m['รุ่น/Model'] || '';
-                const imgSrc = getDirectImageUrl(m['image']);
 
                 return `
                     <div class="machine-card" onclick="showDetail('${id}')">
-                        <img src="${imgSrc}" class="machine-img" alt="Machine">
+                        <img id="img-${id}" src="https://via.placeholder.com/200x120?text=Loading..." class="machine-img" alt="Machine">
                         <h4>${id}</h4>
                         <p>${brand} ${model}</p>
                     </div>
                 `;
             }).join('');
+
+            // สั่งวิ่งไปดึงรูปจาก Apps Script ทีละตัว
+            filtered.forEach(m => {
+                const id = m['รหัสเครื่องจักร'];
+                if (id) fetchMachineImage(id);
+            });
+        }
+
+        // ฟังก์ชันดึงรูปภาพผ่าน Apps Script
+        async function fetchMachineImage(machineId) {
+            const imgElement = document.getElementById(`img-${machineId}`);
+            if (!imgElement) return;
+
+            if (imageCache[machineId]) {
+                imgElement.src = imageCache[machineId];
+                return;
+            }
+
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
+                const data = await response.json();
+                
+                if (data && data.url) {
+                    imageCache[machineId] = data.url;
+                    imgElement.src = data.url;
+                } else {
+                    imgElement.src = 'https://via.placeholder.com/200x120?text=No+Image';
+                }
+            } catch (err) {
+                console.error('Error fetching image for ' + machineId, err);
+                imgElement.src = 'https://via.placeholder.com/200x120?text=Error';
+            }
         }
 
         function showDetail(machineId) {
