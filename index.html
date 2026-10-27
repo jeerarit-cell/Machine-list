@@ -8,83 +8,86 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; margin: 0; padding: 10px; color: #333; font-size: 16px; }
-        .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        h2, h3 { color: #1a73e8; margin-top: 0; }
-        .status-box { text-align: center; padding: 40px; color: #666; font-size: 16px; }
+        body { background-color: #f4f6f9; margin: 0; padding: 6px; color: #333; font-size: 16px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        h2 { font-size: 20px; color: #1a73e8; margin-top: 0; }
+        h3 { font-size: 18px; color: #1a73e8; margin-top: 0; }
+        .status-box { text-align: center; padding: 30px; color: #666; font-size: 16px; }
 
-        /* ส่วนหัวเรื่อง และปุ่มเมนูด้านข้าง */
-        .header-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; }
-        @media (min-width: 768px) {
-            .header-container { flex-direction: row; justify-content: space-between; align-items: center; }
-        }
-        .header-title-area { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        /* ส่วนหัวเรื่อง และช่องค้นหาบนมือถือให้เต็มจอ อ่านง่าย */
+        .header-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; }
+        .header-title-area { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; }
         
-        /* ปุ่มเมนู */
+        /* ปุ่มเมนูขนาดใหญ่ขึ้น กดง่ายบนมือถือ */
         .menu-dropdown { position: relative; display: inline-block; }
-        .menu-btn { background: #1a73e8; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
-        .menu-btn:hover { background: #1557b0; }
-        .menu-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 220px; box-shadow: 0 8px 16px rgba(0,0,0,0.12); border-radius: 8px; z-index: 10; overflow: hidden; border: 1px solid #e2e8f0; }
-        .menu-content button { color: #334155; padding: 12px 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 500; transition: background 0.1s; }
+        .menu-btn { background: #1a73e8; color: white; border: none; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .menu-content { display: none; position: absolute; left: 0; background-color: #ffffff; min-width: 240px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); border-radius: 8px; z-index: 10; overflow: hidden; border: 1px solid #e2e8f0; }
+        .menu-content button { color: #334155; padding: 14px 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 15px; font-weight: 500; }
         .menu-content button:hover { background-color: #f0f4ff; color: #1a73e8; }
         .menu-dropdown.show .menu-content { display: block; }
 
-        /* ช่องค้นหา */
-        #searchInput { width: 100%; max-width: 400px; padding: 10px 14px; font-size: 15px; border: 2px solid #cbd5e1; border-radius: 8px; outline: none; transition: border-color 0.2s; }
+        /* ช่องค้นหาขยายเต็มความกว้าง */
+        #searchInput { width: 100%; padding: 12px 14px; font-size: 16px; border: 2px solid #cbd5e1; border-radius: 8px; outline: none; }
         #searchInput:focus { border-color: #1a73e8; }
 
-        /* หน้าแรก: ข้อมูลการซ่อมบำรุงเต็มพื้นที่ */
-        .repair-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; }
-        .repair-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .repair-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; gap: 15px; align-items: center; }
-        .repair-img { width: 120px; height: 90px; object-fit: cover; border-radius: 6px; background: #f1f5f9; flex-shrink: 0; }
-        .repair-text { font-size: 15px; color: #334155; line-height: 1.5; }
+        /* หน้าแรก: ข้อมูลการซ่อมบำรุง */
+        .repair-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; }
+        .repair-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+        .repair-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+        .repair-img { width: 100px; height: 80px; object-fit: cover; border-radius: 6px; background: #f1f5f9; flex-shrink: 0; }
+        .repair-text { font-size: 15px; color: #334155; line-height: 1.4; }
 
-        /* ปุ่มดูเพิ่มเติม / ย้อนกลับ */
-        .pagination-bar { text-align: center; margin-top: 20px; }
-        .page-btn { background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: background 0.2s; }
-        .page-btn:hover { background: #1557b0; }
+        /* ปุ่มดูเพิ่มเติม */
+        .pagination-bar { text-align: center; margin-top: 16px; }
+        .page-btn { background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; }
         .page-btn.secondary { background: #64748b; }
-        .page-btn.secondary:hover { background: #475569; }
 
-        /* ตารางประเภทเครื่องจักร */
-        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
-        .category-card { background: #f8f9fa; border: 2px solid #e2e8f0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .category-card:hover { border-color: #1a73e8; background: #f0f4ff; transform: translateY(-2px); }
-        .category-card h3 { margin: 0 0 8px 0; color: #1e293b; }
-        .category-card span { color: #64748b; font-size: 14px; }
+        /* ตารางประเภทเครื่องจักร: ปรับบนมือถือให้เป็นการ์ดใหญ่ขึ้น (2 คอลัมน์กำลังดี ไม่แน่นเกินไป) */
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        @media (min-width: 768px) {
+            .category-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        }
+        .category-card { background: #f8f9fa; border: 2px solid #cbd5e1; border-radius: 8px; padding: 14px 10px; text-align: center; cursor: pointer; }
+        .category-card:hover { border-color: #1a73e8; background: #f0f4ff; }
+        .category-card h3 { font-size: 15px; margin: 0 0 6px 0; color: #1e293b; }
+        .category-card span { color: #64748b; font-size: 13px; }
 
         /* หน้ารายการเครื่องจักร */
-        .machine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
-        .machine-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; }
-        .machine-card:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e1; }
-        .machine-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; background: #f1f5f9; margin-bottom: 10px; }
-        .machine-card h4 { font-size: 16px; margin: 0 0 6px 0; color: #0f172a; }
-        .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
+        .machine-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        @media (min-width: 768px) {
+            .machine-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        }
+        .machine-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; }
+        .machine-img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; background: #f1f5f9; margin-bottom: 6px; }
+        .machine-card h4 { font-size: 15px; margin: 0 0 4px 0; color: #0f172a; }
+        .machine-card p { margin: 0; font-size: 13px; color: #64748b; }
 
         /* หน้ารายละเอียด */
-        .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 15px; }
-        .detail-row { display: flex; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 15px; font-weight: 600; width: 35%; color: #475569; }
-        .detail-value { font-size: 15px; width: 65%; color: #1e293b; }
+        .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-top: 15px; }
+        .detail-row { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+        @media (min-width: 640px) {
+            .detail-row { flex-direction: row; }
+            .detail-label { width: 35%; font-weight: 600; }
+            .detail-value { width: 65%; }
+        }
+        .detail-label { font-size: 14px; color: #475569; }
+        .detail-value { font-size: 15px; color: #1e293b; }
 
-        .back-btn { background: #64748b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; font-size: 14px; }
-        .back-btn:hover { background: #475569; }
+        .back-btn { background: #64748b; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; font-size: 15px; width: 100%; }
+        @media (min-width: 640px) { .back-btn { width: auto; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- สถานะกำลังโหลด -->
     <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>
 
-    <!-- ส่วนหัวและปุ่มเมนู -->
+    <!-- ส่วนหัวและเมนูบนมือถือ -->
     <div id="headerWrapper" class="header-container" style="display: none;">
         <div class="header-title-area">
-            <h2>🏭 ระบบจัดการเครื่องจักรและซ่อมบำรุง</h2>
+            <h2 style="margin: 0; font-size: 18px;">🏭 ระบบจัดการเครื่องจักร</h2>
             <div class="menu-dropdown" id="mainMenuDropdown">
-                <button class="menu-btn" onclick="toggleMenu()">📌 เมนูระบบ ▾</button>
+                <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
                 <div class="menu-content">
                     <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
                     <button onclick="switchView('viewTable')">📊 ตารางประเภทเครื่องจักร</button>
@@ -92,36 +95,35 @@
             </div>
         </div>
         <div>
-            <input type="text" id="searchInput" placeholder="🔍 พิมพ์ค้นหารหัสเครื่องจักร...">
+            <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร...">
         </div>
     </div>
 
-    <!-- หน้า Home (แสดงข้อมูลซ่อมบำรุงพร้อมปุ่มดูเพิ่มเติม 11-20) -->
+    <!-- หน้า Home -->
     <div id="viewHome" style="display: none;">
         <div class="repair-section">
             <h3>🛠️ ข้อมูลการซ่อมบำรุงล่าสุด</h3>
             <div id="repairContainer" class="repair-grid">
                 <p style="color: #64748b; text-align: center; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
             </div>
-            <!-- ปุ่มดูเพิ่มเติม -->
             <div id="paginationContainer" class="pagination-bar" style="display: none;">
                 <button id="pageBtn" class="page-btn" onclick="toggleRepairPage()">📄 ดูเพิ่มเติม (รายการที่ 11-20)</button>
             </div>
         </div>
     </div>
 
-    <!-- หน้าตารางประเภทเครื่องจักร (เข้าผ่านเมนู) -->
+    <!-- หน้าตารางประเภทเครื่องจักร -->
     <div id="viewTable" style="display: none;">
         <button class="back-btn" onclick="switchView('viewHome')">⬅️ กลับหน้าแรก</button>
-        <h2>📊 ตารางประเภทเครื่องจักรทั้งหมด</h2>
-        <p style="color: #64748b;">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักรในระบบ:</p>
+        <h2>📊 ตารางประเภทเครื่องจักร</h2>
+        <p style="color: #64748b; font-size: 14px;">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักร:</p>
         <div id="categoryContainer" class="category-grid"></div>
     </div>
 
-    <!-- หน้ารายการเครื่องจักรตามประเภท -->
+    <!-- หน้ารายการเครื่องจักร -->
     <div id="viewMachines" style="display: none;">
         <button class="back-btn" onclick="goBackFromMachines()">⬅️ ย้อนกลับ</button>
-        <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
+        <h2 id="categoryTitle" style="font-size: 18px;">รายชื่อเครื่องจักร</h2>
         <div id="machineContainer" class="machine-grid"></div>
     </div>
 
@@ -130,7 +132,7 @@
         <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
         <h2>📋 รายละเอียดเครื่องจักร</h2>
         <div style="text-align: center; margin-bottom: 15px;">
-            <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-width: 300px; height: auto; border-radius: 8px; border: 1px solid #ddd;">
+            <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-width: 260px; height: auto; border-radius: 8px; border: 1px solid #ddd;">
         </div>
         <div id="detailContainer"></div>
     </div>
@@ -138,14 +140,14 @@
 
 <script>
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
-    const REPAIR_CSV_URL = ''; // 🔗 ใส่ลิงก์ CSV ชีทซ่อมบำรุงที่นี่
+    const REPAIR_CSV_URL = ''; 
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
 
     let allMachines = [];
     let allRepairs = [];
     let currentCategory = '';
     let lastActiveView = 'viewHome';
-    let currentRepairPage = 1; // 1 = แสดง 1-10, 2 = แสดง 11-20
+    let currentRepairPage = 1;
     let imageCache = {};
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -234,7 +236,7 @@
         container.innerHTML = Object.keys(categoryCounts).map(cat => `
             <div class="category-card" onclick="selectCategory('${cat}')">
                 <h3>${cat}</h3>
-                <span>จำนวน ${categoryCounts[cat]} เครื่อง</span>
+                <span>${categoryCounts[cat]} เครื่อง</span>
             </div>
         `).join('');
     }
@@ -258,10 +260,10 @@
                 repairContainer.innerHTML = currentSlice.map(r => {
                     const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
                     const detail = r['รายละเอียดการซ่อม'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-                    const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/120x90?text=No+Image';
+                    const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/100x80?text=No+Image';
                     return `
                         <div class="repair-card">
-                            <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/120x90?text=No+Image'">
+                            <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/100x80?text=No+Image'">
                             <div class="repair-text">
                                 <strong>รหัส: ${code}</strong><br>
                                 <span>${detail}</span>
@@ -273,7 +275,6 @@
                 repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ไม่มีข้อมูลเพิ่มเติมในหน้านี้</p>`;
             }
 
-            // จัดการปุ่มดูเพิ่มเติม / ย้อนกลับ
             if (allRepairs.length > 10 || currentRepairPage === 2) {
                 paginationContainer.style.display = 'block';
                 if (currentRepairPage === 1 && allRepairs.length > 10) {
