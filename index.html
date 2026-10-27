@@ -42,13 +42,54 @@
         #searchInput { width: 100%; padding: 14px 16px; font-size: 17px; border: 2px solid #cbd5e1; border-radius: 10px; outline: none; background: #fafafa; }
         #searchInput:focus { border-color: #1a73e8; background: #fff; }
 
-        /* หน้าแรก: ข้อมูลการซ่อมบำรุง (ตัวหนังสือใหญ่ อ่านง่าย) */
-        .repair-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
-        .repair-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
-        .repair-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 14px; display: flex; gap: 14px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .repair-img { width: 110px; height: 90px; object-fit: cover; border-radius: 8px; background: #f1f5f9; flex-shrink: 0; }
-        .repair-text { font-size: 16px; color: #334155; line-height: 1.5; }
-        .repair-text strong { font-size: 17px; color: #0f172a; }
+        /* หน้าแรก: ข้อมูลการซ่อมบำรุง */
+.repair-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.repair-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* เพิ่มระยะห่างระหว่างการ์ดแต่ละใบ */
+    margin-top: 14px;
+}
+
+.repair-card {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column; /* 🔄 บังคับให้รูปอยู่บน ข้อความอยู่ใต้รูป */
+    align-items: stretch;    /* ขยายความกว้างเต็มพื้นที่การ์ด */
+    gap: 12px;               /* ระยะห่างระหว่างรูปกับข้อความ */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.repair-img {
+    width: 100%;             /* 🖼️ ขยายรูปให้กว้างเต็มการ์ด */
+    height: 190px;           /* ปรับความสูงรูปตามต้องการ */
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f1f5f9;
+}
+
+.repair-text {
+    font-size: 15px;         
+    color: #334155;
+    line-height: 1.6;        /* 📖 เพิ่มระยะห่างระหว่างบรรทัดให้อ่านง่ายขึ้นเมื่อข้อความยาวๆ */
+    word-break: break-word;  /* ป้องกันไม่ให้ตัวหนังสือยาวเกินขอบกล่อง */
+}
+
+.repair-text strong {
+    font-size: 17px;         /* ขนาดหัวข้อรหัสเครื่องจักร */
+    color: #0f172a;
+    display: block;
+    margin-bottom: 6px;      
+}
 
         /* ปุ่มดูเพิ่มเติมขนาดใหญ่ */
         .pagination-bar { text-align: center; margin-top: 20px; }
@@ -265,19 +306,25 @@
 
         if (currentSlice.length > 0) {
             repairContainer.innerHTML = currentSlice.map(r => {
-                const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
-                const detail = r['รายละเอียดการซ่อม'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-                const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/110x90?text=No+Image';
-                return `
-                    <div class="repair-card">
-                        <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/110x90?text=No+Image'">
-                        <div class="repair-text">
-                            <strong>รหัส: ${code}</strong><br>
-                            <span>${detail}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+    // ดึงค่าตามหัวคอลัมน์จริงใน Google Sheets ของคุณ
+    const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
+    const dateTime = r['วัน/เวลาการแจ้ง'] || '';
+    // ดึงทั้งรายละเอียดการซ่อม หรือรายละเอียดการแจ้ง
+    const detail = r['รายละเอียดการซ่อม'] || r['รายละเอียดการแจ้ง'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
+    const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || ''; // ปรับชื่อคอลัมน์ชื่อเครื่องตามในชีทของคุณ
+    const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/110x90?text=No+Image';
+
+    return `
+        <div class="repair-card">
+            <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/110x90?text=No+Image'">
+            <div class="repair-text">
+                <span class="repair-code">รหัส: ${code} ${machineName ? `(${machineName})` : ''}</span>
+                ${dateTime ? `<span class="repair-meta">⏱ แจ้งเมื่อ: ${dateTime}</span>` : ''}
+                <span>📝 <strong>รายละเอียด:</strong> ${detail}</span>
+            </div>
+        </div>
+    `;
+}).join('');
         } else {
             repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ไม่มีข้อมูลเพิ่มเติมในหน้านี้</p>`;
         }
