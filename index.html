@@ -192,7 +192,6 @@
         }
     });
 }
-
     function finalizeInit() {
         if (allMachines.length > 0) {
             document.getElementById('loadingStatus').style.display = 'none';
@@ -253,70 +252,75 @@
     }
 
     function renderRepairData() {
-        const repairContainer = document.getElementById('repairContainer');
-        const paginationContainer = document.getElementById('paginationContainer');
-        const pageBtn = document.getElementById('pageBtn');
+    const repairContainer = document.getElementById('repairContainer');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const pageBtn = document.getElementById('pageBtn');
 
-        if (allRepairs.length > 0) {
-            let start = 0;
-            let end = 10;
-            if (currentRepairPage === 2) {
-                start = 10;
-                end = 20;
-            }
+    if (allRepairs.length > 0) {
+        let limit = 30; // 📌 กำหนดแสดงครั้งละ 30 รายการ
+        let start = (currentRepairPage - 1) * limit;
+        let end = currentRepairPage * limit;
 
-            const currentSlice = allRepairs.slice(start, end);
+        const currentSlice = allRepairs.slice(start, end);
 
-            if (currentSlice.length > 0) {
-                repairContainer.innerHTML = currentSlice.map(r => {
-                    const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
-                    const detail = r['รายละเอียดการซ่อม'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-                    const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/110x90?text=No+Image';
-                    return `
-                        <div class="repair-card">
-                            <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/110x90?text=No+Image'">
-                            <div class="repair-text">
-                                <strong>รหัส: ${code}</strong><br>
-                                <span>${detail}</span>
-                            </div>
+        if (currentSlice.length > 0) {
+            repairContainer.innerHTML = currentSlice.map(r => {
+                const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
+                const detail = r['รายละเอียดการซ่อม'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
+                const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/110x90?text=No+Image';
+                return `
+                    <div class="repair-card">
+                        <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/110x90?text=No+Image'">
+                        <div class="repair-text">
+                            <strong>รหัส: ${code}</strong><br>
+                            <span>${detail}</span>
                         </div>
-                    `;
-                }).join('');
-            } else {
-                repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ไม่มีข้อมูลเพิ่มเติมในหน้านี้</p>`;
-            }
-
-            if (allRepairs.length > 10 || currentRepairPage === 2) {
-                paginationContainer.style.display = 'block';
-                if (currentRepairPage === 1 && allRepairs.length > 10) {
-                    pageBtn.innerText = '📄 ดูเพิ่มเติม (รายการที่ 11-20)';
-                    pageBtn.className = 'page-btn';
-                } else if (currentRepairPage === 2) {
-                    pageBtn.innerText = '⬅️ กลับไปหน้าแรก (รายการที่ 1-10)';
-                    pageBtn.className = 'page-btn secondary';
-                } else {
-                    paginationContainer.style.display = 'none';
-                }
-            } else {
-                paginationContainer.style.display = 'none';
-            }
-
+                    </div>
+                `;
+            }).join('');
         } else {
-            repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 15px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>`;
+            repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ไม่มีข้อมูลเพิ่มเติมในหน้านี้</p>`;
+        }
+
+        // 📌 ปุ่มกดดูเพิ่มเติมทีละ 30 รายการ
+        if (end < allRepairs.length) {
+            paginationContainer.style.display = 'block';
+            pageBtn.innerText = `📄 ดูเพิ่มเติม (รายการที่ ${start + 1} - ${Math.min(end, allRepairs.length)} จากทั้งหมด ${allRepairs.length})`;
+            pageBtn.className = 'page-btn';
+        } else if (currentRepairPage > 1) {
+            paginationContainer.style.display = 'block';
+            pageBtn.innerText = '⬅️ กลับไปหน้าแรก';
+            pageBtn.className = 'page-btn secondary';
+        } else {
             paginationContainer.style.display = 'none';
         }
-    }
 
+    } else {
+        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 15px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>`;
+        paginationContainer.style.display = 'none';
+    }
+}
+
+function toggleRepairPage() {
+    let limit = 30;
+    if ((currentRepairPage * limit) < allRepairs.length) {
+        currentRepairPage++;
+    } else {
+        currentRepairPage = 1;
+    }
+    renderRepairData();
+    window.scrollTo(0, 0);
+}
     function toggleRepairPage() {
-        if (currentRepairPage === 1) {
-            currentRepairPage = 2;
-        } else {
-            currentRepairPage = 1;
-        }
-        renderRepairData();
-        window.scrollTo(0, 0);
+    let limit = 30;
+    if ((currentRepairPage * limit) < allRepairs.length) {
+        currentRepairPage++; // เปิดดู 30 รายการถัดไป
+    } else {
+        currentRepairPage = 1; // วนกลับหน้าแรกสุด
     }
-
+    renderRepairData();
+    window.scrollTo(0, 0);
+}
     function selectCategory(categoryName) {
         currentCategory = categoryName;
         switchView('viewMachines');
