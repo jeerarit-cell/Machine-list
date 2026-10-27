@@ -150,7 +150,7 @@
 
 <script>
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
-    const REPAIR_CSV_URL = ''; 
+    const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv'; 
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
 
     let allMachines = [];
@@ -174,23 +174,24 @@
         });
     });
 
-    function loadRepairData() {
-        if (!REPAIR_CSV_URL) {
-            finalizeInit();
-            return;
-        }
-        Papa.parse(REPAIR_CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
-            complete: function(results) {
-                allRepairs = results.data;
-                finalizeInit();
-            },
-            error: function(err) {
-                console.error('Error loading repair data:', err);
-                finalizeInit();
-            }
-        });
+   function loadRepairData() {
+    if (!REPAIR_CSV_URL) {
+        finalizeInit();
+        return;
     }
+    Papa.parse(REPAIR_CSV_URL, {
+        download: true, header: true, skipEmptyLines: true,
+        complete: function(results) {
+            // 🔄 กลับลำดับให้ข้อมูลใหม่ล่าสุดขึ้นมาอยู่ด้านบนสุด
+            allRepairs = results.data.reverse(); 
+            finalizeInit();
+        },
+        error: function(err) {
+            console.error('Error loading repair data:', err);
+            finalizeInit();
+        }
+    });
+}
 
     function finalizeInit() {
         if (allMachines.length > 0) {
