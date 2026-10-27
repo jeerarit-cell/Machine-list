@@ -193,6 +193,8 @@
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
     const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv'; 
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
+  // 📌 แทนที่ด้วยลิงก์ Web App ที่คุณเพิ่ง Deploy ได้เลยครับ
+    const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
 
     let allMachines = [];
     let allRepairs = [];
@@ -291,6 +293,19 @@
             </div>
         `).join('');
     }
+  // ฟังก์ชันแปลงชื่อไฟล์รูปซ่อมบำรุงให้แสดงผลได้
+function getRepairImageUrl(rawPath) {
+    if (!rawPath) return 'https://via.placeholder.com/110x90?text=No+Image';
+    
+    // หากในชีทบันทึกมาเป็นชื่อไฟล์เฉยๆ เช่น "ซ่อมบำรุง_Images/xxxx.jpg"
+    // ให้ดึงเฉพาะชื่อไฟล์ด้านหลังสุดออกมา
+    let fileName = rawPath.split('/').pop().trim();
+    
+    // ใช้ Folder ID ของคุณจาก Apps Script (1gek4Sx-RyKli-58HEiBfxcKlw6HiFBvU) 
+    // เพื่อดึงไฟล์รูปจาก Google Drive ผ่านลิงก์ตรงของ Google
+    // *หมายเหตุ: ต้องมั่นใจว่าโฟลเดอร์นี้เปิดแชร์สิทธิ์ให้ทุกคนที่มีลิงก์สามารถดูได้*
+    return `https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec?img=${encodeURIComponent(fileName)}`;
+}
 
     function renderRepairData() {
     const repairContainer = document.getElementById('repairContainer');
@@ -305,18 +320,25 @@
         const currentSlice = allRepairs.slice(start, end);
 
         if (currentSlice.length > 0) {
-            repairContainer.innerHTML = currentSlice.map(r => {
-    // ดึงค่าตามหัวคอลัมน์จริงใน Google Sheets ของคุณ
+           repairContainer.innerHTML = currentSlice.map((r, index) => {
     const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
     const dateTime = r['วัน/เวลาการแจ้ง'] || '';
-    // ดึงทั้งรายละเอียดการซ่อม หรือรายละเอียดการแจ้ง
     const detail = r['รายละเอียดการซ่อม'] || r['รายละเอียดการแจ้ง'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-    const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || ''; // ปรับชื่อคอลัมน์ชื่อเครื่องตามในชีทของคุณ
-    const imgUrl = r['รูปภาพ'] || 'https://via.placeholder.com/110x90?text=No+Image';
+    const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || '';
+    
+    const rawImgPath = r['รูปภาพ'] || '';
+    const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
+
+    // สั่งให้วิ่งไปดึงรูปหลังจากเรนเดอร์การ์ดเสร็จ
+    if (rawImgPath) {
+        setTimeout(() => {
+            fetchRepairImage(rawImgPath, uniqueImgId);
+        }, 50);
+    }
 
     return `
         <div class="repair-card">
-            <img src="${imgUrl}" class="repair-img" alt="Repair" onerror="this.src='https://via.placeholder.com/110x90?text=No+Image'">
+            <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair">
             <div class="repair-text">
                 <span class="repair-code">รหัส: ${code} ${machineName ? `(${machineName})` : ''}</span>
                 ${dateTime ? `<span class="repair-meta">⏱ แจ้งเมื่อ: ${dateTime}</span>` : ''}
@@ -411,6 +433,33 @@ function toggleRepairPage() {
             imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
         }
     }
+        const repairImageCache = {};
+
+async function fetchRepairImage(rawPath, imgElementId) {
+    const imgElement = document.getElementById(imgElementId);
+    if (!imgElement || !rawPath) return;
+
+    // ตัดเอาเฉพาะชื่อไฟล์ด้านหลังสุด เช่น "47f38e3b.รูปภาพ.015845.jpg"
+    let fileName = rawPath.split('/').pop().trim();
+    
+    if (repairImageCache[fileName]) {
+        imgElement.src = repairImageCache[fileName];
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${REPAIR_APPS_SCRIPT_URL}?img=${encodeURIComponent(fileName)}`);
+        const data = await response.json();
+        if (data && data.url) {
+            repairImageCache[fileName] = data.url;
+            imgElement.src = data.url;
+        } else {
+            imgElement.src = 'https://via.placeholder.com/110x90?text=No+Image';
+        }
+    } catch (err) {
+        imgElement.src = 'https://via.placeholder.com/110x90?text=Error';
+    }
+}
 
     function showDetail(machineId, imageUrl) {
         switchView('viewDetail');
@@ -459,6 +508,15 @@ function openTableMenu() {
     switchView('viewTable');
     // ปิดเมนูดรอปดาวน์ลงอัตโนมัติหลังกดเลือก
     document.getElementById('mainMenuDropdown').classList.remove('show');
+}
+  function getRepairImageUrl(rawPath) {
+    if (!rawPath) return 'https://via.placeholder.com/110x90?text=No+Image';
+    
+    // ตัดเอาเฉพาะชื่อไฟล์ด้านหลังสุด
+    let fileName = rawPath.split('/').pop().trim();
+    
+    // ส่งชื่อไฟล์ไปให้ Apps Script ตัวเดิมค้นหาและดึงรูปจาก Google Drive ออกมาแสดงผล
+    return `${APPS_SCRIPT_URL}?img=${encodeURIComponent(fileName)}`;
 }
 </script>
 
