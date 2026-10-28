@@ -34,12 +34,12 @@
     overflow: hidden; 
     border: 1px solid #e2e8f0; 
 }
-        .menu-content button { color: #1e293b; padding: 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
+        .menu-content button { color: #1e293b; padding: 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 25px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
         .menu-content button:hover { background-color: #f0f4ff; color: #1a73e8; }
         .menu-dropdown.show .menu-content { display: block; }
 
         /* ช่องค้นหาขนาดใหญ่ เต็มตา */
-        #searchInput { width: 100%; padding: 14px 16px; font-size: 17px; border: 2px solid #cbd5e1; border-radius: 10px; outline: none; background: #fafafa; }
+        #searchInput { width: 100%; padding: 14px 16px; font-size: 20px; border: 2px solid #cbd5e1; border-radius: 10px; outline: none; background: #fafafa; }
         #searchInput:focus { border-color: #1a73e8; background: #fff; }
 
         /* หน้าแรก: ข้อมูลการซ่อมบำรุง */
@@ -71,7 +71,7 @@
 
 .repair-img {
     width: 75%;             /* 🖼️ ขยายรูปให้กว้างเต็มการ์ด */
-    height: 200px;           /* ปรับความสูงรูปตามต้องการ */
+    height: 300px;           /* ปรับความสูงรูปตามต้องการ */
     object-fit: cover;
     border-radius: 8px;
     background: #f1f5f9;
@@ -321,7 +321,6 @@ function getRepairImageUrl(rawPath) {
         let limit = 30; // แสดงหน้าละ 30 รายการ
         let maxPage = Math.ceil(allRepairs.length / limit);
         
-        // ป้องกันไม่ให้หน้าเกินขอบเขต
         if (currentRepairPage > maxPage) currentRepairPage = maxPage;
         if (currentRepairPage < 1) currentRepairPage = 1;
 
@@ -331,10 +330,18 @@ function getRepairImageUrl(rawPath) {
 
         if (currentSlice.length > 0) {
             repairContainer.innerHTML = currentSlice.map((r, index) => {
+                // ดึงข้อมูลตามหัวข้อคอลัมน์ที่ใช้งานจริงใน Google Sheets
+                const no = start + index + 1; // ลำดับรายการ
+                const reportNo = r['ลำดับ'] || r['No.'] || '-';
                 const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
-                const dateTime = r['วัน/เวลาการแจ้ง'] || '';
-                const detail = r['รายละเอียดการซ่อม'] || r['รายละเอียดการแจ้ง'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-                const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || '';
+                const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
+                const symptom = r['อาการเสีย'] || r['รายละเอียดการแจ้ง'] || '-';
+                const dateTime = r['วัน/เวลาการแจ้ง'] || r['วันเวลา'] || '-';
+                const repairDetail = r['รายละเอียดการซ่อม'] || '-';
+                const finishTime = r['วัน/เวลาการซ่อม'] || '-';
+                const status = r['สถานะงานซ่อม'] || r['สถานะ'] || 'รอดำเนินการ';
+                const operator = r['ผู้ปฎิบัติงาน'] || r['ช่างซ่อม'] || '-';
+                
                 const rawImgPath = r['รูปภาพ'] || '';
                 const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
 
@@ -346,23 +353,27 @@ function getRepairImageUrl(rawPath) {
 
                 return `
                     <div class="repair-card">
-                        <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair">
+                        <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
                         <div class="repair-text">
-                            <span class="repair-code">รหัส: ${code} ${machineName ? `(${machineName})` : ''}</span>
-                            ${dateTime ? `<span class="repair-meta">⏱ แจ้งเมื่อ: ${dateTime}</span>` : ''}
-                            <span>📝 <strong>รายละเอียด:</strong> ${detail}</span>
+                            <span class="repair-code">📌 <strong> เลขที่แจ้ง: ${reportNo}</span>
+                            <span> <strong>รหัสเครื่อง:</strong> ${code} ${machineName ? `(${machineName})` : ''}</span>
+                            <span> <strong>อาการเสีย:</strong> ${symptom}</span>
+                            <span> <strong>วัน/เวลาแจ้ง:</strong> ${dateTime}</span>
+                            <span> <strong>รายละเอียดการซ่อม:</strong> ${repairDetail}</span>
+                            <span> <strong>เวลาซ่อมเสร็จ:</strong> ${finishTime}</span>
+                            <span> <strong>สถานะงานซ่อม:</strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'};">${status}</span></span>
+                            <span> <strong>ผู้ปฏิบัติงาน:</strong> ${operator}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // จัดการแสดงผลปุ่ม Next / Back และตัวเลขบอกหน้า
+        // จัดการปุ่มเปลี่ยนหน้า
         if (allRepairs.length > limit) {
             paginationContainer.style.display = 'flex';
             pageIndicator.innerText = `หน้า ${currentRepairPage} / ${maxPage}`;
 
-            // ปิดการใช้งานปุ่ม Back ถ้าอยู่หน้าแรก
             if (currentRepairPage === 1) {
                 prevBtn.style.opacity = '0.4';
                 prevBtn.style.pointerEvents = 'none';
@@ -371,7 +382,6 @@ function getRepairImageUrl(rawPath) {
                 prevBtn.style.pointerEvents = 'auto';
             }
 
-            // ปิดการใช้งานปุ่ม Next ถ้าอยู่หน้าสุดท้าย
             if (currentRepairPage === maxPage) {
                 nextBtn.style.opacity = '0.4';
                 nextBtn.style.pointerEvents = 'none';
@@ -384,7 +394,7 @@ function getRepairImageUrl(rawPath) {
         }
 
     } else {
-        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 15px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>`;
+        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 15px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง</p>`;
         paginationContainer.style.display = 'none';
     }
 }
