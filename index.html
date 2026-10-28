@@ -140,7 +140,7 @@
         </div>
     </div>
 
-    <h2 style="margin: 0; font-size: 18px;">🏭 ระบบจัดการเครื่องจักร</h2>
+    <h2 style="margin: 0; font-size: 30px;">🏭 ระบบจัดการเครื่องจักร</h2>
 
 </div>
             </div>
@@ -330,8 +330,7 @@ function getRepairImageUrl(rawPath) {
 
         if (currentSlice.length > 0) {
             repairContainer.innerHTML = currentSlice.map((r, index) => {
-                // ดึงข้อมูลตามหัวข้อคอลัมน์ที่ใช้งานจริงใน Google Sheets
-                const no = start + index + 1; // ลำดับรายการ
+                const no = start + index + 1; 
                 const reportNo = r['ลำดับ'] || r['No.'] || '-';
                 const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
                 const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
@@ -354,15 +353,15 @@ function getRepairImageUrl(rawPath) {
                 return `
                     <div class="repair-card">
                         <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
-                        <div class="repair-text">
-                            <span class="repair-code">📌 <strong> เลขที่แจ้ง: ${reportNo}</span>
-                            <span> <strong>รหัสเครื่อง:</strong> ${code} ${machineName ? `(${machineName})` : ''}</span>
-                            <span> <strong>อาการเสีย:</strong> ${symptom}</span>
-                            <span> <strong>วัน/เวลาแจ้ง:</strong> ${dateTime}</span>
-                            <span> <strong>รายละเอียดการซ่อม:</strong> ${repairDetail}</span>
-                            <span> <strong>เวลาซ่อมเสร็จ:</strong> ${finishTime}</span>
-                            <span> <strong>สถานะงานซ่อม:</strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'};">${status}</span></span>
-                            <span> <strong>ผู้ปฏิบัติงาน:</strong> ${operator}</span>
+                        <div class="repair-text" style="display: flex; flex-direction: column; gap: 8px;">
+                            <div style="font-size: 24px; font-weight: 700; color: #0f172a;">📌  เลขที่แจ้ง: ${reportNo}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>รหัสเครื่อง:</strong> ${code} ${machineName ? `(${machineName})` : ''}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>อาการเสีย:</strong> ${symptom}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>วัน/เวลาแจ้ง:</strong> ${dateTime}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>รายละเอียดการซ่อม:</strong> ${repairDetail}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>เวลาซ่อมเสร็จ:</strong> ${finishTime}</div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>สถานะงานซ่อม:</strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></div>
+                            <div style="font-size: 24px; color: #334155;"> <strong>ผู้ปฏิบัติงาน:</strong> ${operator}</div>
                         </div>
                     </div>
                 `;
@@ -374,31 +373,20 @@ function getRepairImageUrl(rawPath) {
             paginationContainer.style.display = 'flex';
             pageIndicator.innerText = `หน้า ${currentRepairPage} / ${maxPage}`;
 
-            if (currentRepairPage === 1) {
-                prevBtn.style.opacity = '0.4';
-                prevBtn.style.pointerEvents = 'none';
-            } else {
-                prevBtn.style.opacity = '1';
-                prevBtn.style.pointerEvents = 'auto';
-            }
+            prevBtn.style.opacity = currentRepairPage === 1 ? '0.4' : '1';
+            prevBtn.style.pointerEvents = currentRepairPage === 1 ? 'none' : 'auto';
 
-            if (currentRepairPage === maxPage) {
-                nextBtn.style.opacity = '0.4';
-                nextBtn.style.pointerEvents = 'none';
-            } else {
-                nextBtn.style.opacity = '1';
-                nextBtn.style.pointerEvents = 'auto';
-            }
+            nextBtn.style.opacity = currentRepairPage === maxPage ? '0.4' : '1';
+            nextBtn.style.pointerEvents = currentRepairPage === maxPage ? 'none' : 'auto';
         } else {
             paginationContainer.style.display = 'none';
         }
 
     } else {
-        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 15px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง</p>`;
+        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 18px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง</p>`;
         paginationContainer.style.display = 'none';
     }
 }
-
 // 📌 ฟังก์ชันควบคุมการเปลี่ยนหน้าด้วยปุ่ม Next / Back
 function changeRepairPage(direction) {
     currentRepairPage += direction;
