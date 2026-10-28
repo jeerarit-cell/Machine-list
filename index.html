@@ -355,13 +355,13 @@ function getRepairImageUrl(rawPath) {
                         <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
                         <div class="repair-text" style="display: flex; flex-direction: column; gap: 8px;">
                             <div style="font-size: 24px; font-weight: 700; color: #0f172a;">📌  เลขที่แจ้ง: ${reportNo}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>รหัสเครื่อง:</strong> ${code} ${machineName ? `(${machineName})` : ''}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>อาการเสีย:</strong> ${symptom}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>วัน/เวลาแจ้ง:</strong> ${dateTime}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>รายละเอียดการซ่อม:</strong> ${repairDetail}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>เวลาซ่อมเสร็จ:</strong> ${finishTime}</div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>สถานะงานซ่อม:</strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></div>
-                            <div style="font-size: 24px; color: #334155;"> <strong>ผู้ปฏิบัติงาน:</strong> ${operator}</div>
+                            <div style="font-size: 24px; color: #334155;"> รหัสเครื่อง:<strong> ${code} ${machineName ? `(${machineName})` : ''}</strong></div>
+                            <div style="font-size: 24px; color: #334155;">อาการเสีย:<strong> ${symptom}</strong></div>
+                            <div style="font-size: 24px; color: #334155;"> วัน/เวลาแจ้ง:<strong> ${dateTime}</strong></div>
+                            <div style="font-size: 24px; color: #334155;"> รายละเอียดการซ่อม:<strong> ${repairDetail}</strong></div>
+                            <div style="font-size: 24px; color: #334155;"> เวลาซ่อมเสร็จ:<strong> ${finishTime}</strong></div>
+                            <div style="font-size: 24px; color: #334155;"> สถานะงานซ่อม:<strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></strong></div>
+                            <div style="font-size: 24px; color: #334155;">ผู้ปฏิบัติงาน:<strong> ${operator}</strong></div>
                         </div>
                     </div>
                 `;
