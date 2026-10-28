@@ -157,9 +157,12 @@
             <div id="repairContainer" class="repair-grid">
                 <p style="color: #64748b; text-align: center; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
             </div>
-            <div id="paginationContainer" class="pagination-bar" style="display: none;">
-                <button id="pageBtn" class="page-btn" onclick="toggleRepairPage()">📄 ดูเพิ่มเติม (รายการที่ 11-20)</button>
-            </div>
+            <!-- 📌 เปลี่ยนปุ่มด้านล่างใหม่เป็นแบบ Back | ตัวเลขบอกหน้า | Next -->
+<div id="paginationContainer" class="pagination-bar" style="display: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
+    <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)" style="flex: 1;">⬅️ หน้าก่อนหน้า</button>
+    <span id="pageIndicator" style="font-weight: 600; color: #334155; font-size: 15px; white-space: nowrap;">หน้า 1 / 1</span>
+    <button id="nextBtn" class="page-btn" onclick="changeRepairPage(1)" style="flex: 1;">หน้าถัดไป ➡️</button>
+</div>
         </div>
     </div>
 
@@ -307,59 +310,75 @@ function getRepairImageUrl(rawPath) {
     return `https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec?img=${encodeURIComponent(fileName)}`;
 }
 
-    function renderRepairData() {
+   function renderRepairData() {
     const repairContainer = document.getElementById('repairContainer');
     const paginationContainer = document.getElementById('paginationContainer');
-    const pageBtn = document.getElementById('pageBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageIndicator = document.getElementById('pageIndicator');
 
     if (allRepairs.length > 0) {
-        let limit = 30; // 📌 กำหนดแสดงครั้งละ 30 รายการ
+        let limit = 30; // แสดงหน้าละ 30 รายการ
+        let maxPage = Math.ceil(allRepairs.length / limit);
+        
+        // ป้องกันไม่ให้หน้าเกินขอบเขต
+        if (currentRepairPage > maxPage) currentRepairPage = maxPage;
+        if (currentRepairPage < 1) currentRepairPage = 1;
+
         let start = (currentRepairPage - 1) * limit;
         let end = currentRepairPage * limit;
-
         const currentSlice = allRepairs.slice(start, end);
 
         if (currentSlice.length > 0) {
-           repairContainer.innerHTML = currentSlice.map((r, index) => {
-    const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
-    const dateTime = r['วัน/เวลาการแจ้ง'] || '';
-    const detail = r['รายละเอียดการซ่อม'] || r['รายละเอียดการแจ้ง'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
-    const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || '';
-    
-    const rawImgPath = r['รูปภาพ'] || '';
-    const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
+            repairContainer.innerHTML = currentSlice.map((r, index) => {
+                const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
+                const dateTime = r['วัน/เวลาการแจ้ง'] || '';
+                const detail = r['รายละเอียดการซ่อม'] || r['รายละเอียดการแจ้ง'] || r['อาการเสีย'] || 'ไม่มีรายละเอียด';
+                const machineName = r['ชื่อเครื่อง'] || r['เครื่อง'] || '';
+                const rawImgPath = r['รูปภาพ'] || '';
+                const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
 
-    // สั่งให้วิ่งไปดึงรูปหลังจากเรนเดอร์การ์ดเสร็จ
-    if (rawImgPath) {
-        setTimeout(() => {
-            fetchRepairImage(rawImgPath, uniqueImgId);
-        }, 50);
-    }
+                if (rawImgPath) {
+                    setTimeout(() => {
+                        fetchRepairImage(rawImgPath, uniqueImgId);
+                    }, 50);
+                }
 
-    return `
-        <div class="repair-card">
-            <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair">
-            <div class="repair-text">
-                <span class="repair-code">รหัส: ${code} ${machineName ? `(${machineName})` : ''}</span>
-                ${dateTime ? `<span class="repair-meta">⏱ แจ้งเมื่อ: ${dateTime}</span>` : ''}
-                <span>📝 <strong>รายละเอียด:</strong> ${detail}</span>
-            </div>
-        </div>
-    `;
-}).join('');
-        } else {
-            repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ไม่มีข้อมูลเพิ่มเติมในหน้านี้</p>`;
+                return `
+                    <div class="repair-card">
+                        <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair">
+                        <div class="repair-text">
+                            <span class="repair-code">รหัส: ${code} ${machineName ? `(${machineName})` : ''}</span>
+                            ${dateTime ? `<span class="repair-meta">⏱ แจ้งเมื่อ: ${dateTime}</span>` : ''}
+                            <span>📝 <strong>รายละเอียด:</strong> ${detail}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        // 📌 ปุ่มกดดูเพิ่มเติมทีละ 30 รายการ
-        if (end < allRepairs.length) {
-            paginationContainer.style.display = 'block';
-            pageBtn.innerText = `📄 ดูเพิ่มเติม (รายการที่ ${start + 1} - ${Math.min(end, allRepairs.length)} จากทั้งหมด ${allRepairs.length})`;
-            pageBtn.className = 'page-btn';
-        } else if (currentRepairPage > 1) {
-            paginationContainer.style.display = 'block';
-            pageBtn.innerText = '⬅️ กลับไปหน้าแรก';
-            pageBtn.className = 'page-btn secondary';
+        // จัดการแสดงผลปุ่ม Next / Back และตัวเลขบอกหน้า
+        if (allRepairs.length > limit) {
+            paginationContainer.style.display = 'flex';
+            pageIndicator.innerText = `หน้า ${currentRepairPage} / ${maxPage}`;
+
+            // ปิดการใช้งานปุ่ม Back ถ้าอยู่หน้าแรก
+            if (currentRepairPage === 1) {
+                prevBtn.style.opacity = '0.4';
+                prevBtn.style.pointerEvents = 'none';
+            } else {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+            }
+
+            // ปิดการใช้งานปุ่ม Next ถ้าอยู่หน้าสุดท้าย
+            if (currentRepairPage === maxPage) {
+                nextBtn.style.opacity = '0.4';
+                nextBtn.style.pointerEvents = 'none';
+            } else {
+                nextBtn.style.opacity = '1';
+                nextBtn.style.pointerEvents = 'auto';
+            }
         } else {
             paginationContainer.style.display = 'none';
         }
@@ -370,25 +389,11 @@ function getRepairImageUrl(rawPath) {
     }
 }
 
-function toggleRepairPage() {
-    let limit = 30;
-    if ((currentRepairPage * limit) < allRepairs.length) {
-        currentRepairPage++;
-    } else {
-        currentRepairPage = 1;
-    }
+// 📌 ฟังก์ชันควบคุมการเปลี่ยนหน้าด้วยปุ่ม Next / Back
+function changeRepairPage(direction) {
+    currentRepairPage += direction;
     renderRepairData();
-    window.scrollTo(0, 0);
-}
-    function toggleRepairPage() {
-    let limit = 30;
-    if ((currentRepairPage * limit) < allRepairs.length) {
-        currentRepairPage++; // เปิดดู 30 รายการถัดไป
-    } else {
-        currentRepairPage = 1; // วนกลับหน้าแรกสุด
-    }
-    renderRepairData();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนกลับขึ้นด้านบนสุดแบบนุ่มนวล
 }
     function selectCategory(categoryName) {
         currentCategory = categoryName;
