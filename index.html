@@ -11,7 +11,24 @@
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
         .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
-        
+        /* 📌 เพิ่มส่วนนี้เข้าไปใน <style> ถ้ายังไม่มี */
+.sticky-top-wrapper {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 100;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    margin-bottom: 15px;
+}
+
+.header-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px 14px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
         .category-card:active { transform: scale(0.97); }
@@ -122,78 +139,76 @@
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- ⏳ สถานะกำลังโหลด -->
+        <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
 
-<div class="container">
-    <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
+        <!-- 📌 บล็อกส่วนหัวและช่องค้นหา (ล็อกติดด้านบนตลอดเวลา) -->
+        <div class="sticky-top-wrapper">
+            <!-- แถบเมนูและหัวข้อหลัก -->
+            <div id="headerWrapper" class="header-container" style="display: none;">
+                <div class="header-title-area">
+                    <div class="menu-dropdown" id="mainMenuDropdown">
+                        <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
+                        <div class="menu-content">
+                            <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
+                            <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
+                        </div>
+                    </div>
+                    <h2>🏭 ระบบจัดการเครื่องจักร</h2>
+                </div>
+            </div>
 
-    <!-- ส่วนหัวและเมนูหลัก -->
-    <div id="headerWrapper" class="header-container" style="display: none;">
-        
-            <div class="header-title-area" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    
-    <!-- สลับเอาหัวข้อไว้ซ้าย หรือเอาปุ่มเมนูมาไว้ซ้ายตรงนี้ -->
-    <div class="menu-dropdown" id="mainMenuDropdown">
-        <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
-        <div class="menu-content">
-            <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
-            <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-        </div>
-    </div>
-
-    <h2 style="margin: 0; font-size: 30px;">🏭 ระบบจัดการเครื่องจักร</h2>
-
-</div>
+            <!-- ช่องค้นหา (ค้นหารหัสเครื่อง หรือประเภทเครื่อง) -->
+            <div class="search-box-wrapper">
+                <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
             </div>
         </div>
-       <div>
-    <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
-    <!-- 📌 เพิ่มกล่องแสดงผลลัพธ์การค้นหาตรงนี้ -->
-    <div id="searchResultsContainer" class="machine-grid" style="margin-top: 10px;"></div>
-</div>
-    
+        <!-- จบบล็อกเกาะติดด้านบน -->
 
-    <!-- หน้า Home (แสดงข้อมูลการซ่อม 10 บล็อกล่าสุด) -->
-    <div id="viewHome" style="display: none;">
-        <div class="repair-section">
-            <h3 style="font-size: 30px;"> 🛠️ ข้อมูลการซ่อมบำรุงล่าสุด </h3>
-            <div id="repairContainer" class="repair-grid">
-                <p style="color: #64748b; text-align: center; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
+        <!-- ================= 🏠 หน้าแรก (ข้อมูลการซ่อม 10 รายการล่าสุด) ================= -->
+        <div id="viewHome" style="display: none;">
+            <div class="repair-section">
+                <h3>🛠️ ข้อมูลการซ่อมบำรุงล่าสุด</h3>
+                <div id="repairContainer" class="repair-grid">
+                    <p class="empty-text">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
+                </div>
+
+                <!-- 📄 แถบควบคุมหน้า (Pagination) -->
+                <div id="paginationContainer" class="pagination-bar" style="display: none;">
+                    <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)">⬅️ หน้าก่อนหน้า</button>
+                    <span id="pageIndicator">หน้า 1 / 1</span>
+                    <button id="nextBtn" class="page-btn" onclick="changeRepairPage(1)">หน้าถัดไป ➡️</button>
+                </div>
             </div>
-            <!-- 📌 เปลี่ยนปุ่มด้านล่างใหม่เป็นแบบ Back | ตัวเลขบอกหน้า | Next -->
-<div id="paginationContainer" class="pagination-bar" style="display: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
-    <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)" style="flex: 1;">⬅️ หน้าก่อนหน้า</button>
-    <span id="pageIndicator" style="font-weight: 600; color: #334155; font-size: 15px; white-space: nowrap;">หน้า 1 / 1</span>
-    <button id="nextBtn" class="page-btn" onclick="changeRepairPage(1)" style="flex: 1;">หน้าถัดไป ➡️</button>
-</div>
         </div>
-    </div>
 
-    <!-- หน้าตารางประเภทเครื่องจักร (บล็อกคู่ 2 คอลัมน์ เลื่อนลง) -->
-    <div id="viewTable" style="display: none;">
-        <button class="back-btn" onclick="switchView('viewHome')">⬅️ กลับหน้าแรก</button>
-        <h2>📊 ตารางประเภทเครื่องจักร</h2>
-        <p style="color: #64748b; font-size: 15px; margin-top: 0;">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักร:</p>
-        <div id="categoryContainer" class="category-grid"></div>
-    </div>
-
-    <!-- หน้ารายการเครื่องจักร -->
-    <div id="viewMachines" style="display: none;">
-        <button class="back-btn" onclick="goBackFromMachines()">⬅️ ย้อนกลับ</button>
-        <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
-        <div id="machineContainer" class="machine-grid"></div>
-    </div>
-
-    <!-- หน้ารายละเอียด -->
-    <div id="viewDetail" style="display: none;">
-        <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
-        <h2>📋 รายละเอียดเครื่องจักร</h2>
-        <div style="text-align: center; margin-bottom: 16px;">
-            <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 10px; border: 1px solid #e2e8f0; background: #fafafa;">
+        <!-- ================= 📊 หน้าตารางประเภทเครื่องจักร ================= -->
+        <div id="viewTable" style="display: none;">
+            <button class="back-btn" onclick="switchView('viewHome')">⬅️ กลับหน้าแรก</button>
+            <h2>📊 ตารางประเภทเครื่องจักร</h2>
+            <p class="section-subtitle">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักร:</p>
+            <div id="categoryContainer" class="category-grid"></div>
         </div>
-        <div id="detailContainer"></div>
-    </div>
-</div>
 
+        <!-- ================= 📋 หน้ารายการเครื่องจักรในหมวดหมู่ ================= -->
+        <div id="viewMachines" style="display: none;">
+            <button class="back-btn" onclick="goBackFromMachines()">⬅️ ย้อนกลับ</button>
+            <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
+            <div id="machineContainer" class="machine-grid"></div>
+        </div>
+
+        <!-- ================= 🔍 หน้ารายละเอียดเครื่องจักร ================= -->
+        <div id="viewDetail" style="display: none;">
+            <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
+            <h2>📋 รายละเอียดเครื่องจักร</h2>
+            <div class="detail-img-wrapper">
+                <img id="detailMachineImage" src="" alt="รูปเครื่องจักร">
+            </div>
+            <div id="detailContainer"></div>
+        </div>
+
+    </div>
 <script>
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
     const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv'; 
