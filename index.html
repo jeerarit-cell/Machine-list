@@ -236,6 +236,27 @@
             }
         });
     });
+    // ฟังก์ชันตรวจสอบ URL ตอนเปิดเว็บ เพื่อดูว่ามีการสแกนเปิดเครื่องเจาะจงมาหรือไม่
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get('id'); // ดึงค่าจาก ?id=... ในลิงก์
+
+    // รอให้โหลดข้อมูล allMachines เสร็จก่อน (ถ้าใช้ระบบโหลดข้อมูลเดิมของคุณ)
+    const checkDataReady = setInterval(() => {
+        if (typeof allMachines !== 'undefined' && allMachines.length > 0) {
+            clearInterval(checkDataReady);
+            
+            if (targetId) {
+                // ค้นหาข้อมูลเครื่องจักรที่ตรงกับรหัสในลิงก์
+                const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId);
+                if (machine) {
+                    // เรียกฟังก์ชันแสดงหน้าดีเทลทันที
+                    showDetail(targetId, imageCache[targetId] || '');
+                }
+            }
+        }
+    }, 200);
+});
 
    function loadRepairData() {
     if (!REPAIR_CSV_URL) {
