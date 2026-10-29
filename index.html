@@ -115,8 +115,8 @@
         .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; }
         .detail-row { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 18px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
-        .detail-value { font-size: 25px; color: #1e293b; font-weight: 500; }
+        .detail-label { font-size: 14px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
+        .detail-value { font-size: 16px; color: #1e293b; font-weight: 500; }
 
         .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
     </style>
@@ -145,10 +145,12 @@
 </div>
             </div>
         </div>
-        <div>
-            <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร...">
-        </div>
-    </div>
+       <div>
+    <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
+    <!-- 📌 เพิ่มกล่องแสดงผลลัพธ์การค้นหาตรงนี้ -->
+    <div id="searchResultsContainer" class="machine-grid" style="margin-top: 10px;"></div>
+</div>
+    
 
     <!-- หน้า Home (แสดงข้อมูลการซ่อม 10 บล็อกล่าสุด) -->
     <div id="viewHome" style="display: none;">
@@ -184,7 +186,7 @@
     <!-- หน้ารายละเอียด -->
     <div id="viewDetail" style="display: none;">
         <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
-        <h2s tyle="font-size: 30px;">📋 รายละเอียดเครื่องจักร</h2>
+        <h2>📋 รายละเอียดเครื่องจักร</h2>
         <div style="text-align: center; margin-bottom: 16px;">
             <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 10px; border: 1px solid #e2e8f0; background: #fafafa;">
         </div>
@@ -205,7 +207,7 @@
     let lastActiveView = 'viewHome';
     let currentRepairPage = 1;
     let imageCache = {};
-
+   
     window.addEventListener('DOMContentLoaded', () => {
         Papa.parse(GOOGLE_SHEET_CSV_URL, {
             download: true, header: true, skipEmptyLines: true,
@@ -248,6 +250,75 @@
             document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
         }
     }
+  // ฟังก์ชันสำหรับค้นหาด้วย "รหัสเครื่องจักร" และ "ประเภทเครื่องจักร"
+function handleSearch(keyword) {
+    const trimmedKeyword = keyword.trim().toLowerCase();
+    
+    // ถ้าช่องค้นหาว่าง ให้กลับไปแสดงหน้าจอตามสถานะล่าสุดปกติ
+    if (!trimmedKeyword) {
+        switchView(lastActiveView);
+        return;
+    }
+
+    // กรองข้อมูลจาก allMachines โดยเช็คจาก "รหัสเครื่องจักร" หรือ "ประเภทเครื่องจักร"
+    const filtered = allMachines.filter(m => {
+        const code = (m['รหัสเครื่องจักร'] || '').toLowerCase();
+        const category = (m['ประเภทเครื่องจักร'] || '').toLowerCase();
+        
+        return code.includes(trimmedKeyword) || category.includes(trimmedKeyword);
+    });
+
+    // สลับมาแสดงผลหน้าจำลองรายการเครื่องจักร
+    switchView('viewMachines');
+    document.getElementById('categoryTitle').innerText = `ผลการค้นหา: "${keyword}"`;
+    const container = document.getElementById('machineContainer');
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<p style="color: #64748b; text-align: center; grid-column: span 2; padding: 20px;">ไม่พบเครื่องจักรที่ตรงกับคำว่า "${keyword}"</p>`;
+        return;
+    }
+
+    // แสดงผลการค้นหาออกมาเป็นการ์ดเครื่องจักร
+    container.innerHTML = filtered.map(m => {
+        const id = m['รหัสเครื่องจักร'] || 'No ID';
+        return `
+            <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
+                <img id="search-img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
+                <h4>${id}</h4>
+                <p>${m['ประเภทเครื่องจักร'] || '-'}</p>
+            </div>
+        `;
+    }).join('');
+
+    // ดึงรูปภาพประกอบของผลการค้นหาแต่ละตัว
+    filtered.forEach(m => {
+        if (m['รหัสเครื่องจักร']) {
+            fetchMachineImageForSearch(m['รหัสเครื่องจักร']);
+        }
+    });
+}
+
+// ฟังก์ชันดึงรูปภาพเฉพาะสำหรับผลการค้นหา
+async function fetchMachineImageForSearch(machineId) {
+    const imgElement = document.getElementById(`search-img-${machineId}`);
+    if (!imgElement) return;
+    if (imageCache[machineId]) {
+        imgElement.src = imageCache[machineId];
+        return;
+    }
+    try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
+        const data = await response.json();
+        if (data && data.url) {
+            imageCache[machineId] = data.url;
+            imgElement.src = data.url;
+        } else {
+            imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
+        }
+    } catch (err) {
+        imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
+    }
+}
 
     function toggleMenu() {
         document.getElementById('mainMenuDropdown').classList.toggle('show');
