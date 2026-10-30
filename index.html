@@ -41,36 +41,37 @@
         .machine-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 8px; }
         .machine-card h4 { font-size: 16px; margin: 0 0 4px 0; color: #0f172a; }
         .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
+        /* 🔍 ปรับขนาดตัวหนังสือหน้ารายละเอียดเครื่องจักรให้ใหญ่และชัดเจนขึ้น */
         .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; margin-bottom: 80px; }
-        .detail-row { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+        .detail-row { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 14px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
-        .detail-value { font-size: 16px; color: #1e293b; font-weight: 500; }
+        .detail-label { font-size: 25px; color: #64748b; font-weight: 600; margin-bottom: 4px; } /* ขยายหัวข้อป้ายกำกับ */
+        .detail-value { font-size: 30px; color: #1e293b; font-weight: 600; word-break: break-word; } /* ขยายตัวหนังสือค่าข้อมูลให้ตัวโตสะใจ */
         .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
 
-        /* 📌 สไตล์ปุ่มลอย (Floating Action Buttons) */
+      /* 📌 ปรับขนาดปุ่มลอย (Floating Action Buttons) ให้ใหญ่และกดง่ายขึ้น */
         .fab-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             z-index: 999;
         }
         .fab-btn {
             background-color: #1a73e8;
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 14px 20px;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            border-radius: 35px;
+            padding: 18px 26px; /* ขยายขนาดพื้นที่ปุ่มให้กว้างและหนาขึ้น */
+            font-size: 20px;   /* ขยายตัวหนังสือให้ใหญ่เต็มตา (จากเดิม 16px) */
+            font-weight: 750;  /* เพิ่มความหนาของตัวหนังสือ */
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: transform 0.1s, background-color 0.2s;
         }
         .fab-btn:active { transform: scale(0.95); }
