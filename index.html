@@ -159,30 +159,26 @@
 
       function finalizeInit() {
             if (allMachines.length > 0) {
+                // จังหวะที่ 1: ปิดสถานะโหลดและเปิดโครงสร้างหน้าเว็บหลักตามปกติก่อน (ป้องกันเว็บค้าง)
                 document.getElementById('loadingStatus').style.display = 'none';
                 document.getElementById('headerWrapper').style.display = 'flex';
-                
-                // 🔍 ตรวจสอบพารามิเตอร์ ?search= ใน URL
+                initHome();
+                initTableTab();
+
+                // จังหวะที่ 2: ดึงค่าพ่วงท้ายที่สแกนมาเก็บไว้ แล้วสั่งทำงานต่อทันทีอย่างปลอดภัย
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchParam = urlParams.get('search');
                 
                 if (searchParam) {
-                    // กรณีมีลิงก์พ่วงท้าย (เช่น สแกน QR Code มา)
                     const searchInput = document.getElementById('searchInput');
                     if (searchInput) {
                         searchInput.value = searchParam;
                     }
-                    handleSearch(searchParam);
-                    initTableTab();
-                } else {
-                    // กรณีเปิดเว็บเข้ามาตรงๆ แบบปกติ ไม่มีพารามิเตอร์
-                    initHome();
-                    initTableTab();
+                    // หน่วงเวลาสั้นๆ (สัก 100 มิลลิวินาที) ให้หน้าเว็บเรนเดอร์เสร็จสมบูรณ์ก่อน ค่อยสั่งค้นหา
+                    setTimeout(() => {
+                        handleSearch(searchParam);
+                    }, 100);
                 }
-            } else {
-                document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
-            }
-        }
             } else {
                 document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
             }
