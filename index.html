@@ -244,6 +244,17 @@
             document.getElementById('headerWrapper').style.display = 'flex';
             initHome();
             initTableTab();
+           // 📌 เพิ่มตรงนี้: สแกนปุ๊บ เอาค่า ?search= ไปหยอดลงช่องค้นหาแล้วโชว์ผลทันที
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        if (searchQuery) {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = searchQuery;
+                // สั่งให้ระบบทำงานค้นหาทันที (จำลองการพิมพ์/กดค้นหา)
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        } 
         } else {
             document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
         }
