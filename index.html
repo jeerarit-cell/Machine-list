@@ -262,17 +262,20 @@
         initHome();
         initTableTab();
 
-        // 📌 เพิ่มตรงนี้: ตรวจสอบและเปิดหน้าดีเทลจาก QR Code หลังจากข้อมูลพร้อมแล้ว
+       // 📌 ตรวจสอบและเปิดหน้าดีเทลจาก QR Code หลังจากข้อมูลพร้อมแล้ว
         const urlParams = new URLSearchParams(window.location.search);
         const targetId = urlParams.get('id');
         if (targetId) {
-            const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId || m['Machine'] === targetId);
+            const machine = allMachines.find(m => (m['รหัสเครื่องจักร'] || '').trim() === targetId.trim() || (m['Machine'] || '').trim() === targetId.trim());
             if (machine) {
-                showDetail(targetId, imageCache[targetId] || '');
+                // เรียกฟังก์ชันดึงรูปภาพก่อน แล้วค่อยเปิดหน้าดีเทล หรือเปิดด้วยรูปว่างก่อนแล้วให้ระบบโหลดรูปต่อ
+                showDetail(targetId, '');
+                // สั่งดึงรูปภาพของเครื่องนั้นทันที
+                if (typeof fetchMachineImage === 'function') {
+                    fetchMachineImage(targetId);
+                }
             }
-        }
-
-    } else {
+        } else {
         document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
     }
 }
