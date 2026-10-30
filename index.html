@@ -157,25 +157,25 @@
             });
         }
 
-       function finalizeInit() {
+      function finalizeInit() {
             if (allMachines.length > 0) {
                 document.getElementById('loadingStatus').style.display = 'none';
                 document.getElementById('headerWrapper').style.display = 'flex';
                 
-                // 🔍 ตรวจสอบพารามิเตอร์ ?search= ก่อน ถ้ามีให้ข้ามหน้าแรกแล้วค้นหาทันที
+                // 🔍 ตรวจสอบพารามิเตอร์ ?search= ใน URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchParam = urlParams.get('search');
                 
                 if (searchParam) {
+                    // กรณีมีลิงก์พ่วงท้าย (เช่น สแกน QR Code มา)
                     const searchInput = document.getElementById('searchInput');
                     if (searchInput) {
                         searchInput.value = searchParam;
                     }
-                    // สั่งกรองข้อมูลและแสดงผลหน้าเครื่องจักรทันที
                     handleSearch(searchParam);
-                    initTableTab(); // โหลดข้อมูลตารางเตรียมไว้เบื้องหลัง
+                    initTableTab();
                 } else {
-                    // ถ้าไม่มีพารามิเตอร์ ค่อยเปิดหน้าแรกปกติ
+                    // กรณีเปิดเว็บเข้ามาตรงๆ แบบปกติ ไม่มีพารามิเตอร์
                     initHome();
                     initTableTab();
                 }
