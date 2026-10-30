@@ -9,7 +9,7 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
-        .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; min-height: 90vh; }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
         .sticky-top-wrapper { position: sticky; top: 0; background-color: #ffffff; z-index: 100; padding-top: 10px; padding-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); margin-bottom: 15px; }
         .header-title-area { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -41,12 +41,41 @@
         .machine-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 8px; }
         .machine-card h4 { font-size: 16px; margin: 0 0 4px 0; color: #0f172a; }
         .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
-        .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; }
+        .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; margin-bottom: 80px; }
         .detail-row { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
         .detail-row:last-child { border-bottom: none; }
         .detail-label { font-size: 14px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
         .detail-value { font-size: 16px; color: #1e293b; font-weight: 500; }
         .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
+
+        /* 📌 สไตล์ปุ่มลอย (Floating Action Buttons) */
+        .fab-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+        .fab-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .fab-btn:active { transform: scale(0.95); }
+        .fab-repair { background-color: #ea4335; } /* สีแดง/ส้ม สำหรับแจ้งซ่อม */
+        .fab-history { background-color: #1a73e8; } /* สีฟ้า สำหรับประวัติซ่อม */
     </style>
 </head>
 <body>
@@ -111,6 +140,12 @@
                 <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; background: #f1f5f9;">
             </div>
             <div id="detailContainer"></div>
+
+            <!-- 📌 ปุ่มลอย (แสดงเฉพาะในหน้ารายละเอียด) -->
+            <div class="fab-container">
+                <button class="fab-btn fab-history" onclick="viewMachineHistory()">📜 ประวัติซ่อมเครื่องนี้</button>
+                <button class="fab-btn fab-repair" onclick="openRepairForm()">🛠️ แจ้งซ่อมเครื่องนี้</button>
+            </div>
         </div>
     </div>
 
@@ -120,11 +155,15 @@
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec'; 
         const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
 
+        // 📝 ลิงก์สำหรับแจ้งซ่อม (คุณจีระฤทธิ์สามารถเปลี่ยนเป็นลิงก์ Google Form ของตัวเองได้เลยครับ)
+        const REPAIR_FORM_BASE_URL = 'https://docs.google.com/forms/d/e/YOUR_GOOGLE_FORM_ID/viewform?entry.123456789=';
+
         let allMachines = [];
         let allRepairs = [];
         let currentCategory = '';
         let lastActiveView = 'viewHome';
         let currentRepairPage = 1;
+        let currentActiveMachineId = ''; // เก็บค่ารหัสเครื่องปัจจุบันที่กำลังเปิดดู
         let imageCache = {};
         let repairImageCache = {};
 
@@ -157,15 +196,13 @@
             });
         }
 
-      function finalizeInit() {
+        function finalizeInit() {
             if (allMachines.length > 0) {
-                // จังหวะที่ 1: ปิดสถานะโหลดและเปิดโครงสร้างหน้าเว็บหลักตามปกติก่อน (ป้องกันเว็บค้าง)
                 document.getElementById('loadingStatus').style.display = 'none';
                 document.getElementById('headerWrapper').style.display = 'flex';
                 initHome();
                 initTableTab();
 
-                // จังหวะที่ 2: ดึงค่าพ่วงท้ายที่สแกนมาเก็บไว้ แล้วสั่งทำงานต่อทันทีอย่างปลอดภัย
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchParam = urlParams.get('search') || urlParams.get('id') || urlParams.get('code');
                 
@@ -174,7 +211,6 @@
                     if (searchInput) {
                         searchInput.value = searchParam;
                     }
-                    // หน่วงเวลาสั้นๆ (สัก 100 มิลลิวินาที) ให้หน้าเว็บเรนเดอร์เสร็จสมบูรณ์ก่อน ค่อยสั่งค้นหา
                     setTimeout(() => {
                         handleSearch(searchParam);
                     }, 100);
@@ -217,16 +253,16 @@
                 if (m['รหัสเครื่องจักร']) { fetchMachineImageForSearch(m['รหัสเครื่องจักร']); }
             });
 
-            // ⚡ เพิ่มระบบออโต้คลิก: ถ้าผลการค้นหาตรงกับรหัสเป๊ะๆ เพียง 1 ตัว (เช่น สแกน QR Code มา) ให้กดเข้าไปหน้ารายละเอียดให้อัตโนมัติทันที
             if (filtered.length === 1) {
                 const exactMatchId = filtered[0]['รหัสเครื่องจักร'];
                 if (exactMatchId && exactMatchId.toLowerCase() === trimmedKeyword) {
                     setTimeout(() => {
                         showDetail(exactMatchId, imageCache[exactMatchId] || '');
-                    }, 200); // หน่วงเวลานิดหน่อยให้รูปและข้อมูลเตรียมพร้อมก่อนคลิก
+                    }, 200);
                 }
             }
         }
+
         async function fetchMachineImageForSearch(machineId) {
             const imgElement = document.getElementById(`search-img-${machineId}`);
             if (!imgElement) return;
@@ -428,6 +464,7 @@
 
         function showDetail(machineId, imageUrl) {
             switchView('viewDetail');
+            currentActiveMachineId = machineId; // บันทึกรหัสเครื่องปัจจุบันไว้ใช้งานกับปุ่มลอย
             const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
             const container = document.getElementById('detailContainer');
             const imgElement = document.getElementById('detailMachineImage');
@@ -457,6 +494,73 @@
             }
             detailHtml += '</div>';
             container.innerHTML = detailHtml;
+        }
+
+        // 🛠️ ฟังก์ชันทำงานเมื่อกดปุ่มแจ้งซ่อม
+        function openRepairForm() {
+            if (!currentActiveMachineId) return;
+            // เปิด Google Form พร้อมส่งรหัสเครื่องติดไป (เปลี่ยนลิงก์ฟอร์มตามต้องการได้เลยครับ)
+            const formUrl = REPAIR_FORM_BASE_URL + encodeURIComponent(currentActiveMachineId);
+            window.open(formUrl, '_blank');
+        }
+
+        // 📜 ฟังก์ชันทำงานเมื่อกดปุ่มดูประวัติซ่อมเฉพาะเครื่องนี้
+        function viewMachineHistory() {
+            if (!currentActiveMachineId) return;
+            // สลับกลับมาหน้าแรก แล้วพิมพ์รหัสเครื่องลงช่องค้นหาเพื่อกรองดูประวัติ
+            switchView('viewHome');
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = currentActiveMachineId;
+            }
+            // กรองประวัติการซ่อมเฉพาะเครื่องนี้
+            const repairContainer = document.getElementById('repairContainer');
+            const filteredRepairs = allRepairs.filter(r => {
+                const code = (r['รหัสเครื่องจักร'] || r['Code'] || '').trim();
+                return code.toLowerCase() === currentActiveMachineId.toLowerCase();
+            });
+
+            if (filteredRepairs.length > 0) {
+                repairContainer.innerHTML = filteredRepairs.map((r, index) => {
+                    const reportNo = r['ลำดับ'] || r['No.'] || '-';
+                    const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
+                    const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
+                    const symptom = r['อาการเสีย'] || r['รายละเอียดการแจ้ง'] || '-';
+                    const dateTime = r['วัน/เวลาการแจ้ง'] || r['วันเวลา'] || '-';
+                    const repairDetail = r['รายละเอียดการซ่อม'] || '-';
+                    const finishTime = r['วัน/เวลาการซ่อม'] || '-';
+                    const status = r['สถานะงานซ่อม'] || r['สถานะ'] || 'รอดำเนินการ';
+                    const operator = r['ผู้ปฎิบัติงาน'] || r['ช่างซ่อม'] || '-';
+                    const rawImgPath = r['รูปภาพ'] || '';
+                    const uniqueImgId = `history-img-${index}`;
+
+                    if (rawImgPath) {
+                        setTimeout(() => { fetchRepairImage(rawImgPath, uniqueImgId); }, 50);
+                    }
+
+                    return `
+                        <div class="repair-card" style="border: 2px solid #1a73e8;">
+                            <div style="background: #e8f0fe; color: #1a73e8; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; margin-bottom: 4px;">ประวัติการซ่อมของเครื่อง: ${currentActiveMachineId}</div>
+                            <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
+                            <div class="repair-text" style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="font-size: 24px; font-weight: 700; color: #0f172a;">📌 เลขที่แจ้ง: ${reportNo}</div>
+                                <div style="font-size: 24px; color: #334155;">รหัสเครื่อง:<strong> ${code} ${machineName ? `(${machineName})` : ''}</strong></div>
+                                <div style="font-size: 24px; color: #334155;">อาการเสีย:<strong> ${symptom}</strong></div>
+                                <div style="font-size: 24px; color: #334155;">วัน/เวลาแจ้ง:<strong> ${dateTime}</strong></div>
+                                <div style="font-size: 24px; color: #334155;">รายละเอียดการซ่อม:<strong> ${repairDetail}</strong></div>
+                                <div style="font-size: 24px; color: #334155;">เวลาซ่อมเสร็จ:<strong> ${finishTime}</strong></div>
+                                <div style="font-size: 24px; color: #334155;">สถานะงานซ่อม:<strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></strong></div>
+                                <div style="font-size: 24px; color: #334155;">ผู้ปฏิบัติงาน:<strong> ${operator}</strong></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('paginationContainer').style.display = 'none';
+            } else {
+                repairContainer.innerHTML = `<div style="text-align: center; padding: 30px;"><p style="color: #64748b; font-size: 20px; margin-bottom: 16px;">ยังไม่มีประวัติการซ่อมสำหรับเครื่อง: <strong>${currentActiveMachineId}</strong></p><button class="page-btn" onclick="renderRepairData()" style="width: auto; padding: 10px 20px;">⬅️ กลับไปดูรายการทั้งหมด</button></div>`;
+                document.getElementById('paginationContainer').style.display = 'none';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function goBackFromMachines() {
