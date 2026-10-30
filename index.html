@@ -505,24 +505,27 @@
             window.open(formUrl, '_blank');
         }
 
-        // 📜 ฟังก์ชันทำงานเมื่อกดปุ่มดูประวัติซ่อมเฉพาะเครื่องนี้
+        // 📜 ฟังก์ชันทำงานเมื่อกดปุ่มดูประวัติซ่อมเฉพาะเครื่องนี้ (เพิ่มปุ่มย้อนกลับด้านบนให้เรียบร้อย)
         function viewMachineHistory() {
             if (!currentActiveMachineId) return;
-            // สลับกลับมาหน้าแรก แล้วพิมพ์รหัสเครื่องลงช่องค้นหาเพื่อกรองดูประวัติ
             switchView('viewHome');
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.value = currentActiveMachineId;
             }
-            // กรองประวัติการซ่อมเฉพาะเครื่องนี้
             const repairContainer = document.getElementById('repairContainer');
             const filteredRepairs = allRepairs.filter(r => {
                 const code = (r['รหัสเครื่องจักร'] || r['Code'] || '').trim();
                 return code.toLowerCase() === currentActiveMachineId.toLowerCase();
             });
 
+            // 📌 สร้างปุ่มย้อนกลับด้านบนสุด เพื่อให้กดกลับไปหน้ารายละเอียดเครื่องได้ทันที
+            let htmlContent = `
+                <button class="back-btn" onclick="showDetail('${currentActiveMachineId}', '')" style="margin-bottom: 16px;">⬅️ กลับหน้ารายละเอียดเครื่อง</button>
+            `;
+
             if (filteredRepairs.length > 0) {
-                repairContainer.innerHTML = filteredRepairs.map((r, index) => {
+                htmlContent += filteredRepairs.map((r, index) => {
                     const reportNo = r['ลำดับ'] || r['No.'] || '-';
                     const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
                     const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
@@ -556,14 +559,18 @@
                         </div>
                     `;
                 }).join('');
-                document.getElementById('paginationContainer').style.display = 'none';
             } else {
-                repairContainer.innerHTML = `<div style="text-align: center; padding: 30px;"><p style="color: #64748b; font-size: 20px; margin-bottom: 16px;">ยังไม่มีประวัติการซ่อมสำหรับเครื่อง: <strong>${currentActiveMachineId}</strong></p><button class="page-btn" onclick="renderRepairData()" style="width: auto; padding: 10px 20px;">⬅️ กลับไปดูรายการทั้งหมด</button></div>`;
-                document.getElementById('paginationContainer').style.display = 'none';
+                htmlContent += `
+                    <div style="text-align: center; padding: 30px;">
+                        <p style="color: #64748b; font-size: 20px; margin-bottom: 16px;">ยังไม่มีประวัติการซ่อมสำหรับเครื่อง: <strong>${currentActiveMachineId}</strong></p>
+                    </div>
+                `;
             }
+
+            repairContainer.innerHTML = htmlContent;
+            document.getElementById('paginationContainer').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         function goBackFromMachines() {
             switchView('viewTable');
         }
