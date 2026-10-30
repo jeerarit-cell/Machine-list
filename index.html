@@ -167,7 +167,7 @@
 
                 // จังหวะที่ 2: ดึงค่าพ่วงท้ายที่สแกนมาเก็บไว้ แล้วสั่งทำงานต่อทันทีอย่างปลอดภัย
                 const urlParams = new URLSearchParams(window.location.search);
-                const searchParam = urlParams.get('search');
+                const searchParam = urlParams.get('search') || urlParams.get('id') || urlParams.get('code');
                 
                 if (searchParam) {
                     const searchInput = document.getElementById('searchInput');
