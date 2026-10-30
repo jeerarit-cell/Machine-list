@@ -236,28 +236,28 @@
             }
         });
     });
-    // ฟังก์ชันตรวจสอบ URL ตอนเปิดเว็บ เพื่อดูว่ามีการสแกนเปิดเครื่องเจาะจงมาหรือไม่
+   // วางต่อจากส่วนที่โหลดข้อมูลเครื่องจักรเสร็จแล้ว (เช่น โหลดข้อมูลจาก Sheet เรียบร้อย)
 window.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const targetId = urlParams.get('id'); // ดึงค่าจาก ?id=... ในลิงก์
+    const targetId = urlParams.get('id'); // ดึงค่า id จากลิงก์ที่สแกนมา
 
-    // รอให้โหลดข้อมูล allMachines เสร็จก่อน (ถ้าใช้ระบบโหลดข้อมูลเดิมของคุณ)
-    const checkDataReady = setInterval(() => {
-        if (typeof allMachines !== 'undefined' && allMachines.length > 0) {
-            clearInterval(checkDataReady);
-            
-            if (targetId) {
-                // ค้นหาข้อมูลเครื่องจักรที่ตรงกับรหัสในลิงก์
-                const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId);
+    if (targetId) {
+        // รอให้ข้อมูล allMachines โหลดเสร็จสมบูรณ์
+        const checkDataReady = setInterval(() => {
+            if (typeof allMachines !== 'undefined' && allMachines.length > 0) {
+                clearInterval(checkDataReady);
+                
+                // ค้นหาข้อมูลเครื่องจักรที่ตรงกับรหัสใน QR Code
+                const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId || m['Machine'] === targetId);
+                
                 if (machine) {
-                    // เรียกฟังก์ชันแสดงหน้าดีเทลทันที
-                    showDetail(targetId, imageCache[targetId] || '');
+                    // เรียกฟังก์ชันแสดงหน้าดีเทลที่คุณมีอยู่แล้วทันที
+                    showDetail(targetId);
                 }
             }
-        }
-    }, 200);
+        }, 200);
+    }
 });
-
    function loadRepairData() {
     if (!REPAIR_CSV_URL) {
         finalizeInit();
