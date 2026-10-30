@@ -11,24 +11,7 @@
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
         .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
-        /* 📌 เพิ่มส่วนนี้เข้าไปใน <style> ถ้ายังไม่มี */
-.sticky-top-wrapper {
-    position: sticky;
-    top: 0;
-    background-color: #ffffff;
-    z-index: 100;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    margin-bottom: 15px;
-}
-
-.header-title-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
+        
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px 14px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
         .category-card:active { transform: scale(0.97); }
@@ -115,11 +98,11 @@
 
         /* ตารางประเภทเครื่องจักร: บล็อกคู่ (2 คอลัมน์) เลื่อนลงสวยๆ */
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
-        .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 20px 16px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.1s; }
+        .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 16px 12px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.1s; }
         .category-card:active { transform: scale(0.97); }
         .category-card:hover { border-color: #1a73e8; background: #f0f4ff; }
-        .category-card h3 { font-size: 25px; margin: 0 0 6px 0; color: #1e293b; }
-        .category-card span { color: #64748b; font-size: 18px; font-weight: 500; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; display: inline-block; }
+        .category-card h3 { font-size: 16px; margin: 0 0 6px 0; color: #1e293b; }
+        .category-card span { color: #64748b; font-size: 14px; font-weight: 500; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; display: inline-block; }
 
         /* หน้ารายการเครื่องจักร (2 คอลัมน์การ์ดคู่) */
         .machine-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
@@ -139,76 +122,76 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ⏳ สถานะกำลังโหลด -->
-        <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
 
-        <!-- 📌 บล็อกส่วนหัวและช่องค้นหา (ล็อกติดด้านบนตลอดเวลา) -->
-        <div class="sticky-top-wrapper">
-            <!-- แถบเมนูและหัวข้อหลัก -->
-            <div id="headerWrapper" class="header-container" style="display: none;">
-                <div class="header-title-area">
-                    <div class="menu-dropdown" id="mainMenuDropdown">
-                        <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
-                        <div class="menu-content">
-                            <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
-                            <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-                        </div>
-                    </div>
-                    <h2>🏭 ระบบจัดการเครื่องจักร</h2>
-                </div>
-            </div>
+<div class="container">
+    <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
 
-            <!-- ช่องค้นหา (ค้นหารหัสเครื่อง หรือประเภทเครื่อง) -->
-            <div class="search-box-wrapper">
-                <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
-            </div>
+    <!-- ส่วนหัวและเมนูหลัก -->
+    <div id="headerWrapper" class="header-container" style="display: none;">
+        
+            <div class="header-title-area" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    
+    <!-- สลับเอาหัวข้อไว้ซ้าย หรือเอาปุ่มเมนูมาไว้ซ้ายตรงนี้ -->
+    <div class="menu-dropdown" id="mainMenuDropdown">
+        <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
+        <div class="menu-content">
+            <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
+            <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
         </div>
-        <!-- จบบล็อกเกาะติดด้านบน -->
-
-        <!-- ================= 🏠 หน้าแรก (ข้อมูลการซ่อม 10 รายการล่าสุด) ================= -->
-        <div id="viewHome" style="display: none;">
-            <div class="repair-section">
-                <h3>🛠️ ข้อมูลการซ่อมบำรุงล่าสุด</h3>
-                <div id="repairContainer" class="repair-grid">
-                    <p class="empty-text">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
-                </div>
-
-                <!-- 📄 แถบควบคุมหน้า (Pagination) -->
-                <div id="paginationContainer" class="pagination-bar" style="display: none;">
-                    <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)">⬅️ หน้าก่อนหน้า</button>
-                    <span id="pageIndicator">หน้า 1 / 1</span>
-                    <button id="nextBtn" class="page-btn" onclick="changeRepairPage(1)">หน้าถัดไป ➡️</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= 📊 หน้าตารางประเภทเครื่องจักร ================= -->
-        <div id="viewTable" style="display: none;">
-            <button class="back-btn" onclick="switchView('viewHome')">⬅️ กลับหน้าแรก</button>
-            <h2>📊 ตารางประเภทเครื่องจักร</h2>
-            <p class="section-subtitle">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักร:</p>
-            <div id="categoryContainer" class="category-grid"></div>
-        </div>
-
-        <!-- ================= 📋 หน้ารายการเครื่องจักรในหมวดหมู่ ================= -->
-        <div id="viewMachines" style="display: none;">
-            <button class="back-btn" onclick="goBackFromMachines()">⬅️ ย้อนกลับ</button>
-            <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
-            <div id="machineContainer" class="machine-grid"></div>
-        </div>
-
-        <!-- ================= 🔍 หน้ารายละเอียดเครื่องจักร ================= -->
-        <div id="viewDetail" style="display: none;">
-            <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
-            <h2>📋 รายละเอียดเครื่องจักร</h2>
-            <div class="detail-img-wrapper">
-                <img id="detailMachineImage" src="" alt="รูปเครื่องจักร">
-            </div>
-            <div id="detailContainer"></div>
-        </div>
-
     </div>
+
+    <h2 style="margin: 0; font-size: 30px;">🏭 ระบบจัดการเครื่องจักร</h2>
+
+</div>
+            </div>
+        </div>
+        <div>
+            <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร...">
+        </div>
+    </div>
+
+    <!-- หน้า Home (แสดงข้อมูลการซ่อม 10 บล็อกล่าสุด) -->
+    <div id="viewHome" style="display: none;">
+        <div class="repair-section">
+            <h3>🛠️ ข้อมูลการซ่อมบำรุงล่าสุด</h3>
+            <div id="repairContainer" class="repair-grid">
+                <p style="color: #64748b; text-align: center; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
+            </div>
+            <!-- 📌 เปลี่ยนปุ่มด้านล่างใหม่เป็นแบบ Back | ตัวเลขบอกหน้า | Next -->
+<div id="paginationContainer" class="pagination-bar" style="display: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px;">
+    <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)" style="flex: 1;">⬅️ หน้าก่อนหน้า</button>
+    <span id="pageIndicator" style="font-weight: 600; color: #334155; font-size: 15px; white-space: nowrap;">หน้า 1 / 1</span>
+    <button id="nextBtn" class="page-btn" onclick="changeRepairPage(1)" style="flex: 1;">หน้าถัดไป ➡️</button>
+</div>
+        </div>
+    </div>
+
+    <!-- หน้าตารางประเภทเครื่องจักร (บล็อกคู่ 2 คอลัมน์ เลื่อนลง) -->
+    <div id="viewTable" style="display: none;">
+        <button class="back-btn" onclick="switchView('viewHome')">⬅️ กลับหน้าแรก</button>
+        <h2>📊 ตารางประเภทเครื่องจักร</h2>
+        <p style="color: #64748b; font-size: 15px; margin-top: 0;">เลือกหมวดหมู่เพื่อดูรายชื่อเครื่องจักร:</p>
+        <div id="categoryContainer" class="category-grid"></div>
+    </div>
+
+    <!-- หน้ารายการเครื่องจักร -->
+    <div id="viewMachines" style="display: none;">
+        <button class="back-btn" onclick="goBackFromMachines()">⬅️ ย้อนกลับ</button>
+        <h2 id="categoryTitle">รายชื่อเครื่องจักร</h2>
+        <div id="machineContainer" class="machine-grid"></div>
+    </div>
+
+    <!-- หน้ารายละเอียด -->
+    <div id="viewDetail" style="display: none;">
+        <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
+        <h2>📋 รายละเอียดเครื่องจักร</h2>
+        <div style="text-align: center; margin-bottom: 16px;">
+            <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 10px; border: 1px solid #e2e8f0; background: #fafafa;">
+        </div>
+        <div id="detailContainer"></div>
+    </div>
+</div>
+
 <script>
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
     const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv'; 
@@ -222,7 +205,7 @@
     let lastActiveView = 'viewHome';
     let currentRepairPage = 1;
     let imageCache = {};
-   
+
     window.addEventListener('DOMContentLoaded', () => {
         Papa.parse(GOOGLE_SHEET_CSV_URL, {
             download: true, header: true, skipEmptyLines: true,
@@ -236,7 +219,7 @@
             }
         });
     });
-   
+
    function loadRepairData() {
     if (!REPAIR_CSV_URL) {
         finalizeInit();
@@ -255,99 +238,16 @@
         }
     });
 }
-   function finalizeInit() {
-    if (allMachines.length > 0) {
-        document.getElementById('loadingStatus').style.display = 'none';
-        document.getElementById('headerWrapper').style.display = 'flex';
-        initHome();
-        initTableTab();
-
-       // 📌 ตรวจสอบและเปิดหน้าดีเทลจาก QR Code หลังจากข้อมูลพร้อมแล้ว
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetId = urlParams.get('id');
-        if (targetId) {
-            const machine = allMachines.find(m => (m['รหัสเครื่องจักร'] || '').trim() === targetId.trim() || (m['Machine'] || '').trim() === targetId.trim());
-            if (machine) {
-                // เรียกฟังก์ชันดึงรูปภาพก่อน แล้วค่อยเปิดหน้าดีเทล หรือเปิดด้วยรูปว่างก่อนแล้วให้ระบบโหลดรูปต่อ
-                showDetail(targetId, '');
-                // สั่งดึงรูปภาพของเครื่องนั้นทันที
-                if (typeof fetchMachineImage === 'function') {
-                    fetchMachineImage(targetId);
-                }
-            }
+    function finalizeInit() {
+        if (allMachines.length > 0) {
+            document.getElementById('loadingStatus').style.display = 'none';
+            document.getElementById('headerWrapper').style.display = 'flex';
+            initHome();
+            initTableTab();
         } else {
-        document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
-    }
-}
-  // ฟังก์ชันสำหรับค้นหาด้วย "รหัสเครื่องจักร" และ "ประเภทเครื่องจักร"
-function handleSearch(keyword) {
-    const trimmedKeyword = keyword.trim().toLowerCase();
-    
-    // ถ้าช่องค้นหาว่าง ให้กลับไปแสดงหน้าจอตามสถานะล่าสุดปกติ
-    if (!trimmedKeyword) {
-        switchView(lastActiveView);
-        return;
-    }
-
-    // กรองข้อมูลจาก allMachines โดยเช็คจาก "รหัสเครื่องจักร" หรือ "ประเภทเครื่องจักร"
-    const filtered = allMachines.filter(m => {
-        const code = (m['รหัสเครื่องจักร'] || '').toLowerCase();
-        const category = (m['ประเภทเครื่องจักร'] || '').toLowerCase();
-        
-        return code.includes(trimmedKeyword) || category.includes(trimmedKeyword);
-    });
-
-    // สลับมาแสดงผลหน้าจำลองรายการเครื่องจักร
-    switchView('viewMachines');
-    document.getElementById('categoryTitle').innerText = `ผลการค้นหา: "${keyword}"`;
-    const container = document.getElementById('machineContainer');
-
-    if (filtered.length === 0) {
-        container.innerHTML = `<p style="color: #64748b; text-align: center; grid-column: span 2; padding: 20px;">ไม่พบเครื่องจักรที่ตรงกับคำว่า "${keyword}"</p>`;
-        return;
-    }
-
-    // แสดงผลการค้นหาออกมาเป็นการ์ดเครื่องจักร
-    container.innerHTML = filtered.map(m => {
-        const id = m['รหัสเครื่องจักร'] || 'No ID';
-        return `
-            <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
-                <img id="search-img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
-                <h4>${id}</h4>
-                <p>${m['ประเภทเครื่องจักร'] || '-'}</p>
-            </div>
-        `;
-    }).join('');
-
-    // ดึงรูปภาพประกอบของผลการค้นหาแต่ละตัว
-    filtered.forEach(m => {
-        if (m['รหัสเครื่องจักร']) {
-            fetchMachineImageForSearch(m['รหัสเครื่องจักร']);
+            document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
         }
-    });
-}
-
-// ฟังก์ชันดึงรูปภาพเฉพาะสำหรับผลการค้นหา
-async function fetchMachineImageForSearch(machineId) {
-    const imgElement = document.getElementById(`search-img-${machineId}`);
-    if (!imgElement) return;
-    if (imageCache[machineId]) {
-        imgElement.src = imageCache[machineId];
-        return;
     }
-    try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
-        const data = await response.json();
-        if (data && data.url) {
-            imageCache[machineId] = data.url;
-            imgElement.src = data.url;
-        } else {
-            imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
-        }
-    } catch (err) {
-        imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
-    }
-}
 
     function toggleMenu() {
         document.getElementById('mainMenuDropdown').classList.toggle('show');
