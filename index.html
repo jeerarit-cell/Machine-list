@@ -163,6 +163,17 @@
                 document.getElementById('headerWrapper').style.display = 'flex';
                 initHome();
                 initTableTab();
+
+                // 🔍 ตรวจสอบพารามิเตอร์ ?search= ใน URL หลังโหลดข้อมูลเสร็จ
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchParam = urlParams.get('search');
+                if (searchParam) {
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        searchInput.value = searchParam;
+                        handleSearch(searchParam);
+                    }
+                }
             } else {
                 document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
             }
