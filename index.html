@@ -236,28 +236,7 @@
             }
         });
     });
-   // วางต่อจากส่วนที่โหลดข้อมูลเครื่องจักรเสร็จแล้ว (เช่น โหลดข้อมูลจาก Sheet เรียบร้อย)
-window.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetId = urlParams.get('id'); // ดึงค่า id จากลิงก์ที่สแกนมา
-
-    if (targetId) {
-        // รอให้ข้อมูล allMachines โหลดเสร็จสมบูรณ์
-        const checkDataReady = setInterval(() => {
-            if (typeof allMachines !== 'undefined' && allMachines.length > 0) {
-                clearInterval(checkDataReady);
-                
-                // ค้นหาข้อมูลเครื่องจักรที่ตรงกับรหัสใน QR Code
-                const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId || m['Machine'] === targetId);
-                
-                if (machine) {
-                    // เรียกฟังก์ชันแสดงหน้าดีเทลที่คุณมีอยู่แล้วทันที
-                    showDetail(targetId);
-                }
-            }
-        }, 200);
-    }
-});
+   
    function loadRepairData() {
     if (!REPAIR_CSV_URL) {
         finalizeInit();
@@ -276,16 +255,27 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 }
-    function finalizeInit() {
-        if (allMachines.length > 0) {
-            document.getElementById('loadingStatus').style.display = 'none';
-            document.getElementById('headerWrapper').style.display = 'flex';
-            initHome();
-            initTableTab();
-        } else {
-            document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
+   function finalizeInit() {
+    if (allMachines.length > 0) {
+        document.getElementById('loadingStatus').style.display = 'none';
+        document.getElementById('headerWrapper').style.display = 'flex';
+        initHome();
+        initTableTab();
+
+        // 📌 เพิ่มตรงนี้: ตรวจสอบและเปิดหน้าดีเทลจาก QR Code หลังจากข้อมูลพร้อมแล้ว
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetId = urlParams.get('id');
+        if (targetId) {
+            const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === targetId || m['Machine'] === targetId);
+            if (machine) {
+                showDetail(targetId, imageCache[targetId] || '');
+            }
         }
+
+    } else {
+        document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
     }
+}
   // ฟังก์ชันสำหรับค้นหาด้วย "รหัสเครื่องจักร" และ "ประเภทเครื่องจักร"
 function handleSearch(keyword) {
     const trimmedKeyword = keyword.trim().toLowerCase();
