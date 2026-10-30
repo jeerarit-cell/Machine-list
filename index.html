@@ -212,11 +212,21 @@
                     </div>
                 `;
             }).join('');
+            
             filtered.forEach(m => {
                 if (m['รหัสเครื่องจักร']) { fetchMachineImageForSearch(m['รหัสเครื่องจักร']); }
             });
-        }
 
+            // ⚡ เพิ่มระบบออโต้คลิก: ถ้าผลการค้นหาตรงกับรหัสเป๊ะๆ เพียง 1 ตัว (เช่น สแกน QR Code มา) ให้กดเข้าไปหน้ารายละเอียดให้อัตโนมัติทันที
+            if (filtered.length === 1) {
+                const exactMatchId = filtered[0]['รหัสเครื่องจักร'];
+                if (exactMatchId && exactMatchId.toLowerCase() === trimmedKeyword) {
+                    setTimeout(() => {
+                        showDetail(exactMatchId, imageCache[exactMatchId] || '');
+                    }, 200); // หน่วงเวลานิดหน่อยให้รูปและข้อมูลเตรียมพร้อมก่อนคลิก
+                }
+            }
+        }
         async function fetchMachineImageForSearch(machineId) {
             const imgElement = document.getElementById(`search-img-${machineId}`);
             if (!imgElement) return;
