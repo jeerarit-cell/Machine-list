@@ -11,130 +11,41 @@
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
         .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
-        /* 📌 เพิ่มส่วนนี้เข้าไปใน <style> ถ้ายังไม่มี */
-.sticky-top-wrapper {
-    position: sticky;
-    top: 0;
-    background-color: #ffffff;
-    z-index: 100;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    margin-bottom: 15px;
-}
-
-.header-title-area {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
-        .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px 14px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        .category-card:active { transform: scale(0.97); }
-        .category-card:hover { border-color: #1a73e8; background: #f0f4ff; }
-        .category-card h3 { font-size: 18px; margin: 0 0 8px 0; color: #1e293b; font-weight: 700; }
-        .category-card span { color: #475569; font-size: 15px; font-weight: 600; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; display: inline-block; }
-        
+        .sticky-top-wrapper { position: sticky; top: 0; background-color: #ffffff; z-index: 100; padding-top: 10px; padding-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); margin-bottom: 15px; }
+        .header-title-area { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .menu-dropdown { position: relative; display: inline-block; }
         .menu-btn { background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(26,115,232,0.3); }
-        
-       .menu-content { 
-    display: none; 
-    position: absolute; 
-    left: 0; /* 👈 สลับกลับมาเป็น left: 0 ถ้าปุ่มเมนูย้ายไปอยู่ฝั่งซ้าย */
-    background-color: #ffffff; 
-    min-width: 240px; 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-    border-radius: 10px; 
-    z-index: 10; 
-    overflow: hidden; 
-    border: 1px solid #e2e8f0; 
-}
-        .menu-content button { color: #1e293b; padding: 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 25px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
+        .menu-content { display: none; position: absolute; left: 0; background-color: #ffffff; min-width: 240px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 10px; z-index: 10; overflow: hidden; border: 1px solid #e2e8f0; }
+        .menu-content button { color: #1e293b; padding: 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 20px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
         .menu-content button:hover { background-color: #f0f4ff; color: #1a73e8; }
         .menu-dropdown.show .menu-content { display: block; }
-
-        /* ช่องค้นหาขนาดใหญ่ เต็มตา */
         #searchInput { width: 100%; padding: 14px 16px; font-size: 20px; border: 2px solid #cbd5e1; border-radius: 10px; outline: none; background: #fafafa; }
         #searchInput:focus { border-color: #1a73e8; background: #fff; }
-
-        /* หน้าแรก: ข้อมูลการซ่อมบำรุง */
-.repair-section {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-}
-
-.repair-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* เพิ่มระยะห่างระหว่างการ์ดแต่ละใบ */
-    margin-top: 14px;
-}
-
-.repair-card {
-    background: #fff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column; /* 🔄 บังคับให้รูปอยู่บน ข้อความอยู่ใต้รูป */
-    align-items: stretch;    /* ขยายความกว้างเต็มพื้นที่การ์ด */
-    gap: 12px;               /* ระยะห่างระหว่างรูปกับข้อความ */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-}
-
-.repair-img {
-    width: 75%;             /* 🖼️ ขยายรูปให้กว้างเต็มการ์ด */
-    height: 300px;           /* ปรับความสูงรูปตามต้องการ */
-    object-fit: cover;
-    border-radius: 8px;
-    background: #f1f5f9;
-}
-
-.repair-text {
-    font-size: 30px;         
-    color: #334155;
-    line-height: 1.6;        /* 📖 เพิ่มระยะห่างระหว่างบรรทัดให้อ่านง่ายขึ้นเมื่อข้อความยาวๆ */
-    word-break: break-word;  /* ป้องกันไม่ให้ตัวหนังสือยาวเกินขอบกล่อง */
-}
-
-.repair-text strong {
-    font-size: 20px;         /* ขนาดหัวข้อรหัสเครื่องจักร */
-    color: #0f172a;
-    display: block;
-    margin-bottom: 6px;      
-}
-
-        /* ปุ่มดูเพิ่มเติมขนาดใหญ่ */
+        .repair-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+        .repair-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 14px; }
+        .repair-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .repair-img { width: 75%; height: 300px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
+        .repair-text { font-size: 24px; color: #334155; line-height: 1.6; word-break: break-word; }
+        .repair-text strong { font-size: 20px; color: #0f172a; display: block; margin-bottom: 6px; }
         .pagination-bar { text-align: center; margin-top: 20px; }
         .page-btn { background: #1a73e8; color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: 600; width: 100%; box-shadow: 0 2px 5px rgba(26,115,232,0.3); }
         .page-btn.secondary { background: #64748b; }
-
-        /* ตารางประเภทเครื่องจักร: บล็อกคู่ (2 คอลัมน์) เลื่อนลงสวยๆ */
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 20px 16px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.1s; }
         .category-card:active { transform: scale(0.97); }
         .category-card:hover { border-color: #1a73e8; background: #f0f4ff; }
-        .category-card h3 { font-size: 25px; margin: 0 0 6px 0; color: #1e293b; }
-        .category-card span { color: #64748b; font-size: 18px; font-weight: 500; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; display: inline-block; }
-
-        /* หน้ารายการเครื่องจักร (2 คอลัมน์การ์ดคู่) */
+        .category-card h3 { font-size: 22px; margin: 0 0 6px 0; color: #1e293b; }
+        .category-card span { color: #64748b; font-size: 16px; font-weight: 500; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; display: inline-block; }
         .machine-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
         .machine-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         .machine-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 8px; }
         .machine-card h4 { font-size: 16px; margin: 0 0 4px 0; color: #0f172a; }
         .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
-
-        /* หน้ารายละเอียด */
         .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; }
         .detail-row { display: flex; flex-direction: column; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
         .detail-row:last-child { border-bottom: none; }
         .detail-label { font-size: 14px; color: #64748b; font-weight: 600; margin-bottom: 2px; }
         .detail-value { font-size: 16px; color: #1e293b; font-weight: 500; }
-
         .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
     </style>
 </head>
@@ -143,9 +54,8 @@
         <!-- ⏳ สถานะกำลังโหลด -->
         <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
 
-        <!-- 📌 บล็อกส่วนหัวและช่องค้นหา (ล็อกติดด้านบนตลอดเวลา) -->
+        <!-- 📌 บล็อกส่วนหัวและช่องค้นหา -->
         <div class="sticky-top-wrapper">
-            <!-- แถบเมนูและหัวข้อหลัก -->
             <div id="headerWrapper" class="header-container" style="display: none;">
                 <div class="header-title-area">
                     <div class="menu-dropdown" id="mainMenuDropdown">
@@ -158,23 +68,18 @@
                     <h2>🏭 ระบบจัดการเครื่องจักร</h2>
                 </div>
             </div>
-
-            <!-- ช่องค้นหา (ค้นหารหัสเครื่อง หรือประเภทเครื่อง) -->
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
             </div>
         </div>
-        <!-- จบบล็อกเกาะติดด้านบน -->
 
-        <!-- ================= 🏠 หน้าแรก (ข้อมูลการซ่อม 10 รายการล่าสุด) ================= -->
+        <!-- ================= 🏠 หน้าแรก (ข้อมูลการซ่อม) ================= -->
         <div id="viewHome" style="display: none;">
             <div class="repair-section">
                 <h3>🛠️ ข้อมูลการซ่อมบำรุงล่าสุด</h3>
                 <div id="repairContainer" class="repair-grid">
                     <p class="empty-text">ยังไม่มีข้อมูลในชีทซ่อมบำรุง หรือรอใส่ลิงก์ CSV</p>
                 </div>
-
-                <!-- 📄 แถบควบคุมหน้า (Pagination) -->
                 <div id="paginationContainer" class="pagination-bar" style="display: none;">
                     <button id="prevBtn" class="page-btn secondary" onclick="changeRepairPage(-1)">⬅️ หน้าก่อนหน้า</button>
                     <span id="pageIndicator">หน้า 1 / 1</span>
@@ -203,411 +108,344 @@
             <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
             <h2>📋 รายละเอียดเครื่องจักร</h2>
             <div class="detail-img-wrapper">
-                <img id="detailMachineImage" src="" alt="รูปเครื่องจักร">
+                <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; background: #f1f5f9;">
             </div>
             <div id="detailContainer"></div>
         </div>
-
     </div>
-<script>
-    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
-    const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv'; 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
-  // 📌 แทนที่ด้วยลิงก์ Web App ที่คุณเพิ่ง Deploy ได้เลยครับ
-    const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
 
-    let allMachines = [];
-    let allRepairs = [];
-    let currentCategory = '';
-    let lastActiveView = 'viewHome';
-    let currentRepairPage = 1;
-    let imageCache = {};
-   
-    window.addEventListener('DOMContentLoaded', () => {
-        Papa.parse(GOOGLE_SHEET_CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
-            complete: function(results) {
-                allMachines = results.data;
-                loadRepairData();
-            },
-            error: function(err) {
-                document.getElementById('loadingStatus').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูลเครื่องจักร';
-                console.error(err);
-            }
-        });
-    });
+    <script>
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
+        const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec'; 
+        const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
 
-   function loadRepairData() {
-    if (!REPAIR_CSV_URL) {
-        finalizeInit();
-        return;
-    }
-    Papa.parse(REPAIR_CSV_URL, {
-        download: true, header: true, skipEmptyLines: true,
-        complete: function(results) {
-            // 🔄 กลับลำดับให้ข้อมูลใหม่ล่าสุดขึ้นมาอยู่ด้านบนสุด
-            allRepairs = results.data.reverse(); 
-            finalizeInit();
-        },
-        error: function(err) {
-            console.error('Error loading repair data:', err);
-            finalizeInit();
-        }
-    });
-}
-    function finalizeInit() {
-        if (allMachines.length > 0) {
-            document.getElementById('loadingStatus').style.display = 'none';
-            document.getElementById('headerWrapper').style.display = 'flex';
-            initHome();
-            initTableTab();
-        } else {
-            document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
-        }
-    }
-  // ฟังก์ชันสำหรับค้นหาด้วย "รหัสเครื่องจักร" และ "ประเภทเครื่องจักร"
-function handleSearch(keyword) {
-    const trimmedKeyword = keyword.trim().toLowerCase();
-    
-    // ถ้าช่องค้นหาว่าง ให้กลับไปแสดงหน้าจอตามสถานะล่าสุดปกติ
-    if (!trimmedKeyword) {
-        switchView(lastActiveView);
-        return;
-    }
+        let allMachines = [];
+        let allRepairs = [];
+        let currentCategory = '';
+        let lastActiveView = 'viewHome';
+        let currentRepairPage = 1;
+        let imageCache = {};
+        let repairImageCache = {};
 
-    // กรองข้อมูลจาก allMachines โดยเช็คจาก "รหัสเครื่องจักร" หรือ "ประเภทเครื่องจักร"
-    const filtered = allMachines.filter(m => {
-        const code = (m['รหัสเครื่องจักร'] || '').toLowerCase();
-        const category = (m['ประเภทเครื่องจักร'] || '').toLowerCase();
-        
-        return code.includes(trimmedKeyword) || category.includes(trimmedKeyword);
-    });
-
-    // สลับมาแสดงผลหน้าจำลองรายการเครื่องจักร
-    switchView('viewMachines');
-    document.getElementById('categoryTitle').innerText = `ผลการค้นหา: "${keyword}"`;
-    const container = document.getElementById('machineContainer');
-
-    if (filtered.length === 0) {
-        container.innerHTML = `<p style="color: #64748b; text-align: center; grid-column: span 2; padding: 20px;">ไม่พบเครื่องจักรที่ตรงกับคำว่า "${keyword}"</p>`;
-        return;
-    }
-
-    // แสดงผลการค้นหาออกมาเป็นการ์ดเครื่องจักร
-    container.innerHTML = filtered.map(m => {
-        const id = m['รหัสเครื่องจักร'] || 'No ID';
-        return `
-            <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
-                <img id="search-img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
-                <h4>${id}</h4>
-                <p>${m['ประเภทเครื่องจักร'] || '-'}</p>
-            </div>
-        `;
-    }).join('');
-
-    // ดึงรูปภาพประกอบของผลการค้นหาแต่ละตัว
-    filtered.forEach(m => {
-        if (m['รหัสเครื่องจักร']) {
-            fetchMachineImageForSearch(m['รหัสเครื่องจักร']);
-        }
-    });
-}
-
-// ฟังก์ชันดึงรูปภาพเฉพาะสำหรับผลการค้นหา
-async function fetchMachineImageForSearch(machineId) {
-    const imgElement = document.getElementById(`search-img-${machineId}`);
-    if (!imgElement) return;
-    if (imageCache[machineId]) {
-        imgElement.src = imageCache[machineId];
-        return;
-    }
-    try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
-        const data = await response.json();
-        if (data && data.url) {
-            imageCache[machineId] = data.url;
-            imgElement.src = data.url;
-        } else {
-            imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
-        }
-    } catch (err) {
-        imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
-    }
-}
-
-    function toggleMenu() {
-        document.getElementById('mainMenuDropdown').classList.toggle('show');
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('.menu-btn')) {
-            var dropdowns = document.getElementsByClassName("menu-dropdown");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
+        window.addEventListener('DOMContentLoaded', () => {
+            Papa.parse(GOOGLE_SHEET_CSV_URL, {
+                download: true, header: true, skipEmptyLines: true,
+                complete: function(results) {
+                    allMachines = results.data;
+                    loadRepairData();
+                },
+                error: function(err) {
+                    document.getElementById('loadingStatus').innerText = 'เกิดข้อผิดพลาดในการโหลดข้อมูลเครื่องจักร';
+                    console.error(err);
                 }
-            }
-        }
-    }
-
-    function switchView(viewId) {
-        lastActiveView = viewId;
-        document.getElementById('viewHome').style.display = 'none';
-        document.getElementById('viewTable').style.display = 'none';
-        document.getElementById('viewMachines').style.display = 'none';
-        document.getElementById('viewDetail').style.display = 'none';
-        
-        document.getElementById(viewId).style.display = 'block';
-        window.scrollTo(0, 0);
-    }
-
-    function initHome() {
-        switchView('viewHome');
-        renderRepairData();
-    }
-
-    function initTableTab() {
-        const container = document.getElementById('categoryContainer');
-        const categoryCounts = {};
-        allMachines.forEach(m => {
-            const cat = m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท';
-            categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+            });
         });
 
-        container.innerHTML = Object.keys(categoryCounts).map(cat => `
-            <div class="category-card" onclick="selectCategory('${cat}')">
-                <h3>${cat}</h3>
-                <span>${categoryCounts[cat]} เครื่อง</span>
-            </div>
-        `).join('');
-    }
-  // ฟังก์ชันแปลงชื่อไฟล์รูปซ่อมบำรุงให้แสดงผลได้
-function getRepairImageUrl(rawPath) {
-    if (!rawPath) return 'https://via.placeholder.com/110x90?text=No+Image';
-    
-    // หากในชีทบันทึกมาเป็นชื่อไฟล์เฉยๆ เช่น "ซ่อมบำรุง_Images/xxxx.jpg"
-    // ให้ดึงเฉพาะชื่อไฟล์ด้านหลังสุดออกมา
-    let fileName = rawPath.split('/').pop().trim();
-    
-    // ใช้ Folder ID ของคุณจาก Apps Script (1gek4Sx-RyKli-58HEiBfxcKlw6HiFBvU) 
-    // เพื่อดึงไฟล์รูปจาก Google Drive ผ่านลิงก์ตรงของ Google
-    // *หมายเหตุ: ต้องมั่นใจว่าโฟลเดอร์นี้เปิดแชร์สิทธิ์ให้ทุกคนที่มีลิงก์สามารถดูได้*
-    return `https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec?img=${encodeURIComponent(fileName)}`;
-}
-
-   function renderRepairData() {
-    const repairContainer = document.getElementById('repairContainer');
-    const paginationContainer = document.getElementById('paginationContainer');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const pageIndicator = document.getElementById('pageIndicator');
-
-    if (allRepairs.length > 0) {
-        let limit = 30; // แสดงหน้าละ 30 รายการ
-        let maxPage = Math.ceil(allRepairs.length / limit);
-        
-        if (currentRepairPage > maxPage) currentRepairPage = maxPage;
-        if (currentRepairPage < 1) currentRepairPage = 1;
-
-        let start = (currentRepairPage - 1) * limit;
-        let end = currentRepairPage * limit;
-        const currentSlice = allRepairs.slice(start, end);
-
-        if (currentSlice.length > 0) {
-            repairContainer.innerHTML = currentSlice.map((r, index) => {
-                const no = start + index + 1; 
-                const reportNo = r['ลำดับ'] || r['No.'] || '-';
-                const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
-                const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
-                const symptom = r['อาการเสีย'] || r['รายละเอียดการแจ้ง'] || '-';
-                const dateTime = r['วัน/เวลาการแจ้ง'] || r['วันเวลา'] || '-';
-                const repairDetail = r['รายละเอียดการซ่อม'] || '-';
-                const finishTime = r['วัน/เวลาการซ่อม'] || '-';
-                const status = r['สถานะงานซ่อม'] || r['สถานะ'] || 'รอดำเนินการ';
-                const operator = r['ผู้ปฎิบัติงาน'] || r['ช่างซ่อม'] || '-';
-                
-                const rawImgPath = r['รูปภาพ'] || '';
-                const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
-
-                if (rawImgPath) {
-                    setTimeout(() => {
-                        fetchRepairImage(rawImgPath, uniqueImgId);
-                    }, 50);
+        function loadRepairData() {
+            if (!REPAIR_CSV_URL) { finalizeInit(); return; }
+            Papa.parse(REPAIR_CSV_URL, {
+                download: true, header: true, skipEmptyLines: true,
+                complete: function(results) {
+                    allRepairs = results.data.reverse();
+                    finalizeInit();
+                },
+                error: function(err) {
+                    console.error('Error loading repair data:', err);
+                    finalizeInit();
                 }
+            });
+        }
 
+        function finalizeInit() {
+            if (allMachines.length > 0) {
+                document.getElementById('loadingStatus').style.display = 'none';
+                document.getElementById('headerWrapper').style.display = 'flex';
+                initHome();
+                initTableTab();
+            } else {
+                document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
+            }
+        }
+
+        function handleSearch(keyword) {
+            const trimmedKeyword = keyword.trim().toLowerCase();
+            if (!trimmedKeyword) {
+                switchView(lastActiveView);
+                return;
+            }
+            const filtered = allMachines.filter(m => {
+                const code = (m['รหัสเครื่องจักร'] || '').toLowerCase();
+                const category = (m['ประเภทเครื่องจักร'] || '').toLowerCase();
+                return code.includes(trimmedKeyword) || category.includes(trimmedKeyword);
+            });
+            switchView('viewMachines');
+            document.getElementById('categoryTitle').innerText = `ผลการค้นหา: "${keyword}"`;
+            const container = document.getElementById('machineContainer');
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; grid-column: span 2; padding: 20px;">ไม่พบเครื่องจักรที่ตรงกับคำว่า "${keyword}"</p>`;
+                return;
+            }
+            container.innerHTML = filtered.map(m => {
+                const id = m['รหัสเครื่องจักร'] || 'No ID';
                 return `
-                    <div class="repair-card">
-                        <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
-                        <div class="repair-text" style="display: flex; flex-direction: column; gap: 8px;">
-                            <div style="font-size: 24px; font-weight: 700; color: #0f172a;">📌  เลขที่แจ้ง: ${reportNo}</div>
-                            <div style="font-size: 24px; color: #334155;"> รหัสเครื่อง:<strong> ${code} ${machineName ? `(${machineName})` : ''}</strong></div>
-                            <div style="font-size: 24px; color: #334155;">อาการเสีย:<strong> ${symptom}</strong></div>
-                            <div style="font-size: 24px; color: #334155;"> วัน/เวลาแจ้ง:<strong> ${dateTime}</strong></div>
-                            <div style="font-size: 24px; color: #334155;"> รายละเอียดการซ่อม:<strong> ${repairDetail}</strong></div>
-                            <div style="font-size: 24px; color: #334155;"> เวลาซ่อมเสร็จ:<strong> ${finishTime}</strong></div>
-                            <div style="font-size: 24px; color: #334155;"> สถานะงานซ่อม:<strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></strong></div>
-                            <div style="font-size: 24px; color: #334155;">ผู้ปฏิบัติงาน:<strong> ${operator}</strong></div>
-                        </div>
+                    <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
+                        <img id="search-img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
+                        <h4>${id}</h4>
+                        <p>${m['ประเภทเครื่องจักร'] || '-'}</p>
                     </div>
                 `;
             }).join('');
+            filtered.forEach(m => {
+                if (m['รหัสเครื่องจักร']) { fetchMachineImageForSearch(m['รหัสเครื่องจักร']); }
+            });
         }
 
-        // จัดการปุ่มเปลี่ยนหน้า
-        if (allRepairs.length > limit) {
-            paginationContainer.style.display = 'flex';
-            pageIndicator.innerText = `หน้า ${currentRepairPage} / ${maxPage}`;
-
-            prevBtn.style.opacity = currentRepairPage === 1 ? '0.4' : '1';
-            prevBtn.style.pointerEvents = currentRepairPage === 1 ? 'none' : 'auto';
-
-            nextBtn.style.opacity = currentRepairPage === maxPage ? '0.4' : '1';
-            nextBtn.style.pointerEvents = currentRepairPage === maxPage ? 'none' : 'auto';
-        } else {
-            paginationContainer.style.display = 'none';
-        }
-
-    } else {
-        repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 18px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง</p>`;
-        paginationContainer.style.display = 'none';
-    }
-}
-// 📌 ฟังก์ชันควบคุมการเปลี่ยนหน้าด้วยปุ่ม Next / Back
-function changeRepairPage(direction) {
-    currentRepairPage += direction;
-    renderRepairData();
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนกลับขึ้นด้านบนสุดแบบนุ่มนวล
-}
-    function selectCategory(categoryName) {
-        currentCategory = categoryName;
-        switchView('viewMachines');
-        document.getElementById('categoryTitle').innerText = `ประเภท: ${categoryName}`;
-        const container = document.getElementById('machineContainer');
-        const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท') === categoryName);
-
-        container.innerHTML = filtered.map(m => {
-            const id = m['รหัสเครื่องจักร'] || 'No ID';
-            return `
-                <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
-                    <img id="img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
-                    <h4>${id}</h4>
-                    <p>${m['รุ่น/Model'] || '-'}</p>
-                </div>
-            `;
-        }).join('');
-
-        filtered.forEach(m => {
-            if (m['รหัสเครื่องจักร']) fetchMachineImage(m['รหัสเครื่องจักร']);
-        });
-    }
-
-    async function fetchMachineImage(machineId) {
-        const imgElement = document.getElementById(`img-${machineId}`);
-        if (!imgElement) return;
-        if (imageCache[machineId]) {
-            imgElement.src = imageCache[machineId];
-            return;
-        }
-        try {
-            const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
-            const data = await response.json();
-            if (data && data.url) {
-                imageCache[machineId] = data.url;
-                imgElement.src = data.url;
-            } else {
-                imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
+        async function fetchMachineImageForSearch(machineId) {
+            const imgElement = document.getElementById(`search-img-${machineId}`);
+            if (!imgElement) return;
+            if (imageCache[machineId]) { imgElement.src = imageCache[machineId]; return; }
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
+                const data = await response.json();
+                if (data && data.url) {
+                    imageCache[machineId] = data.url;
+                    imgElement.src = data.url;
+                } else {
+                    imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
+                }
+            } catch (err) {
+                imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
             }
-        } catch (err) {
-            imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
-        }
-    }
-        const repairImageCache = {};
-
-async function fetchRepairImage(rawPath, imgElementId) {
-    const imgElement = document.getElementById(imgElementId);
-    if (!imgElement || !rawPath) return;
-
-    // ตัดเอาเฉพาะชื่อไฟล์ด้านหลังสุด เช่น "47f38e3b.รูปภาพ.015845.jpg"
-    let fileName = rawPath.split('/').pop().trim();
-    
-    if (repairImageCache[fileName]) {
-        imgElement.src = repairImageCache[fileName];
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${REPAIR_APPS_SCRIPT_URL}?img=${encodeURIComponent(fileName)}`);
-        const data = await response.json();
-        if (data && data.url) {
-            repairImageCache[fileName] = data.url;
-            imgElement.src = data.url;
-        } else {
-            imgElement.src = 'https://via.placeholder.com/110x90?text=No+Image';
-        }
-    } catch (err) {
-        imgElement.src = 'https://via.placeholder.com/110x90?text=Error';
-    }
-}
-
-    function showDetail(machineId, imageUrl) {
-        switchView('viewDetail');
-        const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
-        const container = document.getElementById('detailContainer');
-        const imgElement = document.getElementById('detailMachineImage');
-
-        if (imageUrl && imageUrl !== '') {
-            imgElement.src = imageUrl;
-        } else if (imageCache[machineId]) {
-            imgElement.src = imageCache[machineId];
-        } else {
-            imgElement.src = 'https://via.placeholder.com/300x200?text=No+Image';
         }
 
-        if (!machine) {
-            container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
-            return;
+        function toggleMenu() {
+            document.getElementById('mainMenuDropdown').classList.toggle('show');
         }
 
-        let detailHtml = '<div class="detail-box">';
-        for (let key in machine) {
-            if (key === 'image') continue;
-            detailHtml += `
-                <div class="detail-row">
-                    <div class="detail-label">${key}</div>
-                    <div class="detail-value">${machine[key] || '-'}</div>
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-btn')) {
+                var dropdowns = document.getElementsByClassName("menu-dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function switchView(viewId) {
+            lastActiveView = viewId;
+            document.getElementById('viewHome').style.display = 'none';
+            document.getElementById('viewTable').style.display = 'none';
+            document.getElementById('viewMachines').style.display = 'none';
+            document.getElementById('viewDetail').style.display = 'none';
+            document.getElementById(viewId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function initHome() {
+            switchView('viewHome');
+            renderRepairData();
+        }
+
+        function initTableTab() {
+            const container = document.getElementById('categoryContainer');
+            const categoryCounts = {};
+            allMachines.forEach(m => {
+                const cat = m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท';
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+            });
+            container.innerHTML = Object.keys(categoryCounts).map(cat => `
+                <div class="category-card" onclick="selectCategory('${cat}')">
+                    <h3>${cat}</h3>
+                    <span>${categoryCounts[cat]} เครื่อง</span>
                 </div>
-            `;
+            `).join('');
         }
-        detailHtml += '</div>';
-        container.innerHTML = detailHtml;
-    }
 
-    function goBackFromMachines() {
-    // บังคับให้กลับไปหน้าตารางประเภทเครื่องจักรโดยตรงเลยครับ
-    switchView('viewTable');
-}
+        function renderRepairData() {
+            const repairContainer = document.getElementById('repairContainer');
+            const paginationContainer = document.getElementById('paginationContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
 
-    function backToMachines() { 
-        selectCategory(currentCategory); 
-    }
-  // ฟังก์ชันสำหรับเปิดหน้าตารางประเภทเครื่องจักรจากเมนูหลัก
-function openTableMenu() {
-    lastActiveView = 'viewTable';
-    switchView('viewTable');
-    // ปิดเมนูดรอปดาวน์ลงอัตโนมัติหลังกดเลือก
-    document.getElementById('mainMenuDropdown').classList.remove('show');
-}
-  function getRepairImageUrl(rawPath) {
-    if (!rawPath) return 'https://via.placeholder.com/110x90?text=No+Image';
-    
-    // ตัดเอาเฉพาะชื่อไฟล์ด้านหลังสุด
-    let fileName = rawPath.split('/').pop().trim();
-    
-    // ส่งชื่อไฟล์ไปให้ Apps Script ตัวเดิมค้นหาและดึงรูปจาก Google Drive ออกมาแสดงผล
-    return `${APPS_SCRIPT_URL}?img=${encodeURIComponent(fileName)}`;
-}
-</script>
+            if (allRepairs.length > 0) {
+                let limit = 30;
+                let maxPage = Math.ceil(allRepairs.length / limit);
+                if (currentRepairPage > maxPage) currentRepairPage = maxPage;
+                if (currentRepairPage < 1) currentRepairPage = 1;
+                let start = (currentRepairPage - 1) * limit;
+                let end = currentRepairPage * limit;
+                const currentSlice = allRepairs.slice(start, end);
 
+                if (currentSlice.length > 0) {
+                    repairContainer.innerHTML = currentSlice.map((r, index) => {
+                        const reportNo = r['ลำดับ'] || r['No.'] || '-';
+                        const code = r['รหัสเครื่องจักร'] || r['Code'] || 'ไม่ระบุรหัส';
+                        const machineName = r['ชื่อเครื่อง'] || r['ชื่อเครื่องจักร'] || '';
+                        const symptom = r['อาการเสีย'] || r['รายละเอียดการแจ้ง'] || '-';
+                        const dateTime = r['วัน/เวลาการแจ้ง'] || r['วันเวลา'] || '-';
+                        const repairDetail = r['รายละเอียดการซ่อม'] || '-';
+                        const finishTime = r['วัน/เวลาการซ่อม'] || '-';
+                        const status = r['สถานะงานซ่อม'] || r['สถานะ'] || 'รอดำเนินการ';
+                        const operator = r['ผู้ปฎิบัติงาน'] || r['ช่างซ่อม'] || '-';
+                        const rawImgPath = r['รูปภาพ'] || '';
+                        const uniqueImgId = `repair-img-${currentRepairPage}-${index}`;
+
+                        if (rawImgPath) {
+                            setTimeout(() => { fetchRepairImage(rawImgPath, uniqueImgId); }, 50);
+                        }
+
+                        return `
+                            <div class="repair-card">
+                                <img id="${uniqueImgId}" src="${rawImgPath ? 'https://via.placeholder.com/110x90?text=Loading...' : 'https://via.placeholder.com/110x90?text=No+Image'}" class="repair-img" alt="Repair Image">
+                                <div class="repair-text" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="font-size: 24px; font-weight: 700; color: #0f172a;">📌  เลขที่แจ้ง: ${reportNo}</div>
+                                    <div style="font-size: 24px; color: #334155;">รหัสเครื่อง:<strong> ${code} ${machineName ? `(${machineName})` : ''}</strong></div>
+                                    <div style="font-size: 24px; color: #334155;">อาการเสีย:<strong> ${symptom}</strong></div>
+                                    <div style="font-size: 24px; color: #334155;">วัน/เวลาแจ้ง:<strong> ${dateTime}</strong></div>
+                                    <div style="font-size: 24px; color: #334155;">รายละเอียดการซ่อม:<strong> ${repairDetail}</strong></div>
+                                    <div style="font-size: 24px; color: #334155;">เวลาซ่อมเสร็จ:<strong> ${finishTime}</strong></div>
+                                    <div style="font-size: 24px; color: #334155;">สถานะงานซ่อม:<strong> <span style="color: ${status.includes('เสร็จ') ? '#10b981' : '#f59e0b'}; font-weight: 600;">${status}</span></strong></div>
+                                    <div style="font-size: 24px; color: #334155;">ผู้ปฏิบัติงาน:<strong> ${operator}</strong></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                if (allRepairs.length > limit) {
+                    paginationContainer.style.display = 'flex';
+                    pageIndicator.innerText = `หน้า ${currentRepairPage} / ${maxPage}`;
+                    prevBtn.style.opacity = currentRepairPage === 1 ? '0.4' : '1';
+                    prevBtn.style.pointerEvents = currentRepairPage === 1 ? 'none' : 'auto';
+                    nextBtn.style.opacity = currentRepairPage === maxPage ? '0.4' : '1';
+                    nextBtn.style.pointerEvents = currentRepairPage === maxPage ? 'none' : 'auto';
+                } else {
+                    paginationContainer.style.display = 'none';
+                }
+            } else {
+                repairContainer.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 18px; padding: 20px;">ยังไม่มีข้อมูลในชีทซ่อมบำรุง</p>`;
+                paginationContainer.style.display = 'none';
+            }
+        }
+
+        function changeRepairPage(direction) {
+            currentRepairPage += direction;
+            renderRepairData();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectCategory(categoryName) {
+            currentCategory = categoryName;
+            switchView('viewMachines');
+            document.getElementById('categoryTitle').innerText = `ประเภท: ${categoryName}`;
+            const container = document.getElementById('machineContainer');
+            const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุประเภท') === categoryName);
+            container.innerHTML = filtered.map(m => {
+                const id = m['รหัสเครื่องจักร'] || 'No ID';
+                return `
+                    <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
+                        <img id="img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img" alt="Machine">
+                        <h4>${id}</h4>
+                        <p>${m['รุ่น/Model'] || '-'}</p>
+                    </div>
+                `;
+            }).join('');
+            filtered.forEach(m => {
+                if (m['รหัสเครื่องจักร']) fetchMachineImage(m['รหัสเครื่องจักร']);
+            });
+        }
+
+        async function fetchMachineImage(machineId) {
+            const imgElement = document.getElementById(`img-${machineId}`);
+            if (!imgElement) return;
+            if (imageCache[machineId]) { imgElement.src = imageCache[machineId]; return; }
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?id=${encodeURIComponent(machineId)}`);
+                const data = await response.json();
+                if (data && data.url) {
+                    imageCache[machineId] = data.url;
+                    imgElement.src = data.url;
+                } else {
+                    imgElement.src = 'https://via.placeholder.com/200x130?text=No+Image';
+                }
+            } catch (err) {
+                imgElement.src = 'https://via.placeholder.com/200x130?text=Error';
+            }
+        }
+
+        async function fetchRepairImage(rawPath, imgElementId) {
+            const imgElement = document.getElementById(imgElementId);
+            if (!imgElement || !rawPath) return;
+            let fileName = rawPath.split('/').pop().trim();
+            if (repairImageCache[fileName]) {
+                imgElement.src = repairImageCache[fileName];
+                return;
+            }
+            try {
+                const response = await fetch(`${REPAIR_APPS_SCRIPT_URL}?img=${encodeURIComponent(fileName)}`);
+                const data = await response.json();
+                if (data && data.url) {
+                    repairImageCache[fileName] = data.url;
+                    imgElement.src = data.url;
+                } else {
+                    imgElement.src = 'https://via.placeholder.com/110x90?text=No+Image';
+                }
+            } catch (err) {
+                imgElement.src = 'https://via.placeholder.com/110x90?text=Error';
+            }
+        }
+
+        function showDetail(machineId, imageUrl) {
+            switchView('viewDetail');
+            const machine = allMachines.find(m => m['รหัสเครื่องจักร'] === machineId);
+            const container = document.getElementById('detailContainer');
+            const imgElement = document.getElementById('detailMachineImage');
+            
+            if (imageUrl && imageUrl !== '') {
+                imgElement.src = imageUrl;
+            } else if (imageCache[machineId]) {
+                imgElement.src = imageCache[machineId];
+            } else {
+                imgElement.src = 'https://via.placeholder.com/300x200?text=No+Image';
+            }
+
+            if (!machine) {
+                container.innerHTML = '<p>ไม่พบข้อมูลเครื่องจักรนี้</p>';
+                return;
+            }
+
+            let detailHtml = '<div class="detail-box">';
+            for (let key in machine) {
+                if (key === 'image') continue;
+                detailHtml += `
+                    <div class="detail-row">
+                        <div class="detail-label">${key}</div>
+                        <div class="detail-value">${machine[key] || '-'}</div>
+                    </div>
+                `;
+            }
+            detailHtml += '</div>';
+            container.innerHTML = detailHtml;
+        }
+
+        function goBackFromMachines() {
+            switchView('viewTable');
+        }
+
+        function backToMachines() {
+            selectCategory(currentCategory);
+        }
+
+        function openTableMenu() {
+            lastActiveView = 'viewTable';
+            switchView('viewTable');
+            document.getElementById('mainMenuDropdown').classList.remove('show');
+        }
+    </script>
 </body>
 </html>
