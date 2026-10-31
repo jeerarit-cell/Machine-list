@@ -9,6 +9,53 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
+        /* ⏳ สไตล์แถบโหลดกลางจอและไอคอนวิ่ง */
+        .custom-loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            gap: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .loader-track {
+            width: 280px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loader-bar {
+            position: absolute;
+            top: 0;
+            left: -40%;
+            width: 40%;
+            height: 100%;
+            background: #1a73e8;
+            border-radius: 4px;
+            animation: moveBar 1.2s infinite linear;
+        }
+        @keyframes moveBar {
+            0% { left: -40%; }
+            100% { left: 100%; }
+        }
+        .loader-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .loader-subtitle {
+            font-size: 16px;
+            color: #64748b;
+        }
         .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; min-height: 90vh; }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
         .sticky-top-wrapper { position: sticky; top: 0; background-color: #ffffff; z-index: 100; padding-top: 10px; padding-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); margin-bottom: 15px; }
@@ -82,7 +129,14 @@
 <body>
     <div class="container">
         <!-- ⏳ สถานะกำลังโหลด -->
-        <div id="loadingStatus" class="status-box">⏳ กำลังโหลดข้อมูล...</div>
+        <!-- ⏳ หน้าจอโหลดแบบแถบวิ่งกลางจอ -->
+    <div id="loadingOverlay" class="custom-loader-wrapper">
+        <div class="loader-title">🏭 กำลังโหลดข้อมูลเครื่องจักร...</div>
+        <div class="loader-track">
+            <div class="loader-bar"></div>
+        </div>
+        <div class="loader-subtitle">โปรดรอสักครู่ ระบบกำลังดึงฐานข้อมูลล่าสุด</div>
+    </div>
 
         <!-- 📌 บล็อกส่วนหัวและช่องค้นหา -->
         <div class="sticky-top-wrapper">
@@ -199,7 +253,10 @@
 
         function finalizeInit() {
             if (allMachines.length > 0) {
-                document.getElementById('loadingStatus').style.display = 'none';
+                // ซ่อนหน้าจอโหลด
+                const loader = document.getElementById('loadingOverlay');
+                if (loader) loader.style.display = 'none';
+
                 document.getElementById('headerWrapper').style.display = 'flex';
                 initHome();
                 initTableTab();
@@ -217,10 +274,10 @@
                     }, 100);
                 }
             } else {
-                document.getElementById('loadingStatus').innerText = 'ไม่พบข้อมูลในชีท';
+                const loaderText = document.querySelector('.loader-title');
+                if (loaderText) loaderText.innerText = 'ไม่พบข้อมูลในชีท';
             }
         }
-
         function handleSearch(keyword) {
             const trimmedKeyword = keyword.trim().toLowerCase();
             if (!trimmedKeyword) {
