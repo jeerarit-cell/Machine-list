@@ -253,6 +253,10 @@
                     setTimeout(() => {
                         handleSearch(searchParam);
                     }, 100);
+
+                    // 🧹 เพิ่มบรรทัดนี้ครับ: เคลียร์ลิงก์พ่วงท้าย (Query Parameter) ทิ้งทันทีหลังดึงค่ามาใช้งาน 
+                    // เพื่อเวลาช่างกดรีเฟรชหน้าเว็บในอนาคต จะได้กลับมาหน้าแรกแบบสะอาดๆ ครับ
+                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
             } else {
                 const loaderText = document.querySelector('.loader-title');
