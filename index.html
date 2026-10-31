@@ -9,7 +9,8 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
-        /* ⏳ สไตล์แถบโหลดกลางจอและไอคอนวิ่ง */
+
+        /* ⏳ สไตล์แถบโหลดกลางจอและไอคอนวิ่ง (ปรับขนาดให้ใหญ่สะใจ มองเห็นชัดเจนเต็มตา) */
         .custom-loader-wrapper {
             position: fixed;
             top: 0;
@@ -22,25 +23,26 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            gap: 16px;
+            gap: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .loader-track {
-            width: 280px;
-            height: 8px;
+            width: 320px;
+            height: 12px;
             background: #e2e8f0;
-            border-radius: 4px;
+            border-radius: 6px;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
         .loader-bar {
             position: absolute;
             top: 0;
             left: -40%;
-            width: 40%;
+            width: 45%;
             height: 100%;
             background: #1a73e8;
-            border-radius: 4px;
+            border-radius: 6px;
             animation: moveBar 1.2s infinite linear;
         }
         @keyframes moveBar {
@@ -48,14 +50,18 @@
             100% { left: 100%; }
         }
         .loader-title {
-            font-size: 22px;
-            font-weight: 600;
+            font-size: 26px;
+            font-weight: 700;
             color: #1e293b;
+            text-align: center;
         }
         .loader-subtitle {
-            font-size: 16px;
+            font-size: 18px;
             color: #64748b;
+            text-align: center;
         }
+
+        /* โครงสร้างหลักอื่นๆ คงเดิมครับ */
         .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; min-height: 90vh; }
         .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
         .sticky-top-wrapper { position: sticky; top: 0; background-color: #ffffff; z-index: 100; padding-top: 10px; padding-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); margin-bottom: 15px; }
@@ -88,48 +94,21 @@
         .machine-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 8px; }
         .machine-card h4 { font-size: 16px; margin: 0 0 4px 0; color: #0f172a; }
         .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
-        /* 🔍 ปรับขนาดตัวหนังสือหน้ารายละเอียดเครื่องจักรให้ใหญ่และชัดเจนขึ้น */
         .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; margin-bottom: 80px; }
         .detail-row { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
         .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 25px; color: #64748b; font-weight: 600; margin-bottom: 4px; } /* ขยายหัวข้อป้ายกำกับ */
-        .detail-value { font-size: 30px; color: #1e293b; font-weight: 600; word-break: break-word; } /* ขยายตัวหนังสือค่าข้อมูลให้ตัวโตสะใจ */
+        .detail-label { font-size: 25px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
+        .detail-value { font-size: 30px; color: #1e293b; font-weight: 600; word-break: break-word; }
         .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
-
-      /* 📌 ปรับขนาดปุ่มลอย (Floating Action Buttons) ให้ใหญ่และกดง่ายขึ้น */
-        .fab-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            z-index: 999;
-        }
-        .fab-btn {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 35px;
-            padding: 18px 26px; /* ขยายขนาดพื้นที่ปุ่มให้กว้างและหนาขึ้น */
-            font-size: 30px;   /* ขยายตัวหนังสือให้ใหญ่เต็มตา (จากเดิม 16px) */
-            font-weight: 750;  /* เพิ่มความหนาของตัวหนังสือ */
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.1s, background-color 0.2s;
-        }
+        .fab-container { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 14px; z-index: 999; }
+        .fab-btn { background-color: #1a73e8; color: white; border: none; border-radius: 35px; padding: 18px 26px; font-size: 30px; font-weight: 750; box-shadow: 0 6px 16px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: transform 0.1s, background-color 0.2s; }
         .fab-btn:active { transform: scale(0.95); }
-        .fab-repair { background-color: #ea4335; } /* สีแดง/ส้ม สำหรับแจ้งซ่อม */
-        .fab-history { background-color: #1a73e8; } /* สีฟ้า สำหรับประวัติซ่อม */
+        .fab-repair { background-color: #ea4335; }
+        .fab-history { background-color: #1a73e8; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ⏳ สถานะกำลังโหลด -->
-        <!-- ⏳ หน้าจอโหลดแบบแถบวิ่งกลางจอ -->
+    <!-- ⏳ หน้าจอโหลดแบบแถบวิ่งกลางจอ (ขนาดใหญ่เต็มตา) -->
     <div id="loadingOverlay" class="custom-loader-wrapper">
         <div class="loader-title">🏭 กำลังโหลดข้อมูลเครื่องจักร...</div>
         <div class="loader-track">
@@ -137,6 +116,8 @@
         </div>
         <div class="loader-subtitle">โปรดรอสักครู่ ระบบกำลังดึงฐานข้อมูลล่าสุด</div>
     </div>
+
+    <div class="container">
 
         <!-- 📌 บล็อกส่วนหัวและช่องค้นหา -->
         <div class="sticky-top-wrapper">
