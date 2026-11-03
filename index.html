@@ -126,7 +126,7 @@
                     <div class="menu-dropdown" id="mainMenuDropdown">
                         <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
                         <div class="menu-content">
-                            <button onclick="switchView('viewHome')">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
+                            <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
                             <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
                         </div>
                     </div>
@@ -291,11 +291,11 @@
                     </div>
                 `;
             }).join('');
-            
             filtered.forEach(m => {
-                if (m['รหัสเครื่องจักร']) { fetchMachineImageForSearch(m['รหัสเครื่องจักร']); }
+                if (m['รหัสเครื่องจักร']) {
+                    fetchMachineImageForSearch(m['รหัสเครื่องจักร']);
+                }
             });
-
             if (filtered.length === 1) {
                 const exactMatchId = filtered[0]['รหัสเครื่องจักร'];
                 if (exactMatchId && exactMatchId.toLowerCase() === trimmedKeyword) {
@@ -547,7 +547,7 @@
             window.open(formUrl, '_blank');
         }
 
-        // 📜 ฟังก์ชันทำงานเมื่อกดปุ่มดูประวัติซ่อมเฉพาะเครื่องนี้ (เพิ่มปุ่มย้อนกลับด้านบนให้เรียบร้อย)
+        // 📜 ฟังก์ชันทำงานเมื่อกดปุ่มดูประวัติซ่อมเฉพาะเครื่องนี้
         function viewMachineHistory() {
             if (!currentActiveMachineId) return;
             switchView('viewHome');
@@ -561,7 +561,6 @@
                 return code.toLowerCase() === currentActiveMachineId.toLowerCase();
             });
 
-            // 📌 สร้างปุ่มย้อนกลับด้านบนสุด เพื่อให้กดกลับไปหน้ารายละเอียดเครื่องได้ทันที
             let htmlContent = `
                 <button class="back-btn" onclick="showDetail('${currentActiveMachineId}', '')" style="margin-bottom: 16px;">⬅️ กลับหน้ารายละเอียดเครื่อง</button>
             `;
