@@ -168,19 +168,17 @@
                         <div class="menu-content">
                             <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
                             <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-                            <!-- 📂 เมนูดรอปดาวน์คู่มือการบำรุงรักษา (PM) แยกตามชนิดเครื่อง -->
-    <div class="dropdown-container">
-        <button class="menu-btn" onclick="togglePmDropdown()" style="width: 100%; justify-content: space-between;">
-            <span>📖 คู่มือการบำรุงรักษา (PM)</span>
-            <span>▾</span>
-        </button>
-        <div id="pmDropdownMenu" class="dropdown-content">
+                           <!-- 📂 แยกปุ่มคู่มือ PM ออกมาเป็นปุ่มกดตรงๆ ในเมนูหลัก -->
+        <button onclick="togglePmDropdownMobile()">📖 คู่มือการบำรุงรักษา (PM) ▾</button>
+        
+        <!-- 📂 กล่องเมนูย่อยที่จะเด้งโผล่เฉพาะตอนกดคู่มือ PM -->
+        <div id="pmDropdownMenu" style="display: none; background: #f8fafc; padding-left: 10px; border-left: 3px solid #1a73e8;">
             <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.0', '_blank')">🪡 จักรเข็มเดี่ยว (PM)</button>
             <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.r4rimo2mb5mf', '_blank')">🧵 จักรโพ้ง (PM)</button>
             <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.1m5v1v3y6q9n', '_blank')">✂️ เครื่องตัดผ้า (อุลตร้าโซนิค)</button>
-            <!-- 💡 อนาคตถ้ามีเครื่องเพิ่ม แค่ก๊อปปี้แท็ก <button> มาวางเพิ่มตรงนี้ได้เลยครับ -->
         </div>
     </div>
+</div>
                             
                         </div>
                     </div>
@@ -684,6 +682,15 @@
         const menu = document.getElementById('pmDropdownMenu');
         menu.classList.toggle('show-dropdown');
     }
+        // 📂 ฟังก์ชันเปิด-ปิดเฉพาะเมนูย่อยคู่มือ PM
+function togglePmDropdownMobile() {
+    const pmMenu = document.getElementById('pmDropdownMenu');
+    if (pmMenu.style.display === 'none' || pmMenu.style.display === '') {
+        pmMenu.style.display = 'block';
+    } else {
+        pmMenu.style.display = 'none';
+    }
+}
 
     // 🖱️ คลิกพื้นที่ว่างเพื่อปิดดรอปดาวน์อัตโนมัติ
     window.addEventListener('click', function(event) {
