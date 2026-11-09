@@ -157,17 +157,22 @@
             <div id="headerWrapper" class="header-container" style="display: none;">
                 <div class="header-title-area">
                     <div class="menu-dropdown" id="mainMenuDropdown">
-                        <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
-                        <div class="menu-content">
-                            <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
-                            <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-                            <button onclick="togglePmDropdownMobile()">📖 คู่มือการบำรุงรักษา (PM) ▾</button>
-                            <div id="pmDropdownMenu" style="display: none; background: #f8fafc; padding-left: 10px; border-left: 3px solid #1a73e8;">
-                                <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.0', '_blank')">🪡 จักรเข็มเดี่ยว (PM)</button>
-                                <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.r4rimo2mb5mf', '_blank')">🧵 จักรโพ้ง (PM)</button>
-                                <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.1m5v1v3y6q9n', '_blank')">✂️ เครื่องตัดผ้า (อุลตร้าโซนิค)</button>
-                            </div>
-                        </div>
+    <button class="menu-btn" onclick="toggleMenu()">📌 เมนู ▾</button>
+    <div class="menu-content">
+        <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
+        <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
+    </div>
+</div>
+
+<!-- 📂 แยกปุ่มดรอปดาวน์คู่มือ PM ออกมาด้านนอก ไม่ให้ไปกวนเมนูหลัก -->
+<div style="margin-top: 10px; position: relative;">
+    <button class="menu-btn" onclick="togglePmDropdownMobile()" style="width: 100%; background: #2563eb;">📖 คู่มือการบำรุงรักษา (PM) ▾</button>
+    <div id="pmDropdownMenu" style="display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+        <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.0', '_blank')" style="padding: 14px; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid #f1f5f9; font-size: 17px; cursor: pointer;">🪡 จักรเข็มเดี่ยว (PM)</button>
+        <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.r4rimo2mb5mf', '_blank')" style="padding: 14px; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid #f1f5f9; font-size: 17px; cursor: pointer;">🧵 จักรโพ้ง (PM)</button>
+        <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.1m5v1v3y6q9n', '_blank')" style="padding: 14px; width: 100%; text-align: left; background: none; border: none; font-size: 17px; cursor: pointer;">✂️ เครื่องตัดผ้า (อุลตร้าโซนิค)</button>
+    </div>
+</div>
                     </div>
                 </div>
                 <h2>🏭 ระบบจัดการเครื่องจักร</h2>
@@ -652,10 +657,10 @@
             document.getElementById('mainMenuDropdown').classList.remove('show');
         }
         // 📂 ฟังก์ชันควบคุมการเปิด-ปิดเมนูดรอปดาวน์คู่มือ PM
-    function togglePmDropdown() {
-        const menu = document.getElementById('pmDropdownMenu');
-        menu.classList.toggle('show-dropdown');
-    }
+    function togglePmDropdownMobile() {
+    const pmMenu = document.getElementById('pmDropdownMenu');
+    pmMenu.style.display = (pmMenu.style.display === 'none' || pmMenu.style.display === '') ? 'block' : 'none';
+}
 
     // 🖱️ คลิกพื้นที่ว่างเพื่อปิดดรอปดาวน์อัตโนมัติ
     window.addEventListener('click', function(event) {
