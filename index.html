@@ -105,6 +105,46 @@
         .fab-btn:active { transform: scale(0.95); }
         .fab-repair { background-color: #ea4335; }
         .fab-history { background-color: #1a73e8; }
+        /* 📂 สไตล์สำหรับเมนูดรอปดาวน์คู่มือ PM รองรับอนาคต */
+    .dropdown-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        left: 0;
+        background-color: #ffffff;
+        min-width: 100%;
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+        z-index: 10;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        margin-top: 4px;
+    }
+    .dropdown-content button {
+        color: #1e293b;
+        padding: 16px;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: 600;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .dropdown-content button:hover {
+        background-color: #f0f4ff;
+        color: #1a73e8;
+    }
+    .show-dropdown {
+        display: block;
+    }
     </style>
 </head>
 <body>
@@ -128,7 +168,20 @@
                         <div class="menu-content">
                             <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
                             <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-                            <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.r4rimo2mb5mf', '_blank')">📖 คู่มือการบำรุงรักษา (PM)</button>
+                            <!-- 📂 เมนูดรอปดาวน์คู่มือการบำรุงรักษา (PM) แยกตามชนิดเครื่อง -->
+    <div class="dropdown-container">
+        <button class="menu-btn" onclick="togglePmDropdown()" style="width: 100%; justify-content: space-between;">
+            <span>📖 คู่มือการบำรุงรักษา (PM)</span>
+            <span>▾</span>
+        </button>
+        <div id="pmDropdownMenu" class="dropdown-content">
+            <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.0', '_blank')">🪡 จักรเข็มเดี่ยว (PM)</button>
+            <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.r4rimo2mb5mf', '_blank')">🧵 จักรโพ้ง (PM)</button>
+            <button onclick="window.open('https://docs.google.com/document/d/1v2DA0Nai9_rHZIgC6xpeKo3rA1Rql47MlJK87DhjN00/edit?tab=t.1m5v1v3y6q9n', '_blank')">✂️ เครื่องตัดผ้า (อุลตร้าโซนิค)</button>
+            <!-- 💡 อนาคตถ้ามีเครื่องเพิ่ม แค่ก๊อปปี้แท็ก <button> มาวางเพิ่มตรงนี้ได้เลยครับ -->
+        </div>
+    </div>
+                            
                         </div>
                     </div>
                     <h2>🏭 ระบบจัดการเครื่องจักร</h2>
@@ -626,6 +679,24 @@
             switchView('viewTable');
             document.getElementById('mainMenuDropdown').classList.remove('show');
         }
+        // 📂 ฟังก์ชันควบคุมการเปิด-ปิดเมนูดรอปดาวน์คู่มือ PM
+    function togglePmDropdown() {
+        const menu = document.getElementById('pmDropdownMenu');
+        menu.classList.toggle('show-dropdown');
+    }
+
+    // 🖱️ คลิกพื้นที่ว่างเพื่อปิดดรอปดาวน์อัตโนมัติ
+    window.addEventListener('click', function(event) {
+        if (!event.target.closest('.dropdown-container')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                let openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show-dropdown')) {
+                    openDropdown.classList.remove('show-dropdown');
+                }
+            }
+        }
+    });
     </script>
 </body>
 </html>
