@@ -251,32 +251,45 @@ body {
   border-radius: 12px;
   padding: 16px;
   display: flex;
-  flex-direction: column; /* บังคับให้เรียงซ้อนจากบนลงล่างเสมอ */
-  align-items: stretch;
-  gap: 12px;
+  flex-direction: row;        /* จัดเรียงเป็นแถวนอน (ซ้าย-ขวา) */
+  align-items: flex-start;    /* จัดให้ชิดด้านบน */
+  gap: 16px;                  /* ระยะห่างระหว่างรูปกับข้อความ */
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
+/* 🖼️ กำหนดขนาดรูปภาพด้านข้างให้พอดี */
 .repair-img {
-  width: 100%; /* ปรับให้เต็มความกว้างการ์ด ไม่ล้นจอ */
-  max-height: 220px; /* ปรับความสูงสูงสุดตามต้องการ */
+  width: 140px;               /* ล็อกความกว้างของรูป */
+  min-width: 140px;
+  height: 110px;              /* ล็อกความสูง */
   object-fit: cover;
   border-radius: 8px;
   background: #f1f5f9;
 }
 
+/* 📝 กล่องข้อความด้านขวา (จัดเรียงเป็นแถวลงมาทีละบรรทัด) */
 .repair-text {
-  font-size: 16px; /* ปรับขนาดฟอนต์ให้อ่านง่ายบนมือถือทุกรุ่น */
+  display: flex;
+  flex-direction: column;     /* บังคับหัวข้อเรียงแถวลงมาด้านล่าง */
+  gap: 6px;                   /* ระยะห่างระหว่างแต่ละบรรทัด */
+  font-size: 14.5px;          /* ขนาดฟอนต์กำลังพอดีเมื่ออยู่ด้านข้าง */
   color: #334155;
-  line-height: 1.6;
+  line-height: 1.5;
+  width: 100%;
+  flex-grow: 1;
+}
+
+/* 📋 สไตล์ของแต่ละแถวข้อมูล */
+.repair-row {
+  border-bottom: 1px dashed #f1f5f9; /* เส้นประบางๆ กั้นระหว่างบรรทัด */
+  padding-bottom: 3px;
   word-break: break-word;
 }
 
+/* 📌 เน้นหัวข้อให้เด่นชัด */
 .repair-text strong {
-  font-size: 16px;
   color: #0f172a;
-  display: inline-block;
-  margin-bottom: 2px;
+  font-weight: 600;
 }
 
 .pagination-bar {
@@ -453,7 +466,16 @@ body {
   background-color: #1a73e8;
 }
 
-
+@media (max-width: 480px) {
+  .repair-card {
+    flex-direction: column; /* มือถือจอเล็กให้รูปอยู่บน ข้อความอยู่ล่างเหมือนเดิม */
+  }
+  .repair-img {
+    width: 100%;
+    height: 180px;
+  }
+}
+        
     </style>
 </head>
 <body>
