@@ -251,7 +251,7 @@ body {
   border-radius: 12px;
   padding: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* บังคับให้เรียงซ้อนจากบนลงล่างเสมอ */
   align-items: stretch;
   gap: 12px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
@@ -259,7 +259,7 @@ body {
 
 .repair-img {
   width: 100%; /* ปรับให้เต็มความกว้างการ์ด ไม่ล้นจอ */
-  max-height: 250px;
+  max-height: 220px; /* ปรับความสูงสูงสุดตามต้องการ */
   object-fit: cover;
   border-radius: 8px;
   background: #f1f5f9;
@@ -449,17 +449,7 @@ body {
   background-color: #1a73e8;
 }
 
-/* 📱 Responsive เพิ่มเติมสำหรับจอแท็บเล็ต/คอมพิวเตอร์ขึ้นไป */
-@media (min-width: 768px) {
-  .repair-card {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .repair-img {
-    width: 240px;
-    height: 180px;
-  }
-}
+
     </style>
 </head>
 <body>
