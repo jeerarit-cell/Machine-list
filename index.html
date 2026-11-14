@@ -7,72 +7,459 @@
     <!-- PapaParse สำหรับแปลง CSV จาก Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; margin: 0; padding: 8px; color: #222; font-size: 16px; }
-        
-        /* ⏳ สไตล์แถบโหลดกลางจอและไอคอนวิ่ง */
-        .custom-loader-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; gap: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .loader-track { width: 450px; height: 45px; background: #e2e8f0; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
-        .loader-bar { position: absolute; top: 0; left: -40%; width: 45%; height: 100%; background: #1a73e8; border-radius: 6px; animation: moveBar 1.2s infinite linear; }
-        @keyframes moveBar { 0% { left: -40%; } 100% { left: 100%; } }
-        .loader-title { font-size: 35px; font-weight: 700; color: #1e293b; text-align: center; }
-        .loader-subtitle { font-size: 25px; color: #64748b; text-align: center; }
+       * {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        .container { max-width: 100%; margin: 0 4px; background: #ffffff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; min-height: 90vh; }
-        .header-container { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; }
-        .sticky-top-wrapper { position: sticky; top: 0; background-color: #ffffff; z-index: 100; padding-top: 10px; padding-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); margin-bottom: 15px; }
-        .header-title-area { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        
-        .menu-dropdown { position: relative; display: inline-block; }
-        .menu-btn { background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(26,115,232,0.3); }
-        
-        .menu-content { display: none; position: absolute; left: 0; background-color: #ffffff; min-width: 240px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 10px; z-index: 999; border: 1px solid #e2e8f0; }
-        .menu-content button { color: #1e293b; padding: 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 20px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
-        .menu-content button:hover { background-color: #f0f4ff; color: #1a73e8; }
-        
-        /* 📂 สไตล์สำหรับเมนูดรอปดาวน์คู่มือ PM ออกด้านข้างและมี Scrollbar */
-        .sub-dropdown-container { position: relative; display: inline-block; width: 100%; }
-        #pmDropdownMenu { display: none; position: absolute; left: 100%; top: 0; background-color: #ffffff; min-width: 260px; max-height: 250px; overflow-y: auto; box-shadow: 0px 8px 20px rgba(0,0,0,0.15); z-index: 9999; border-radius: 10px; border: 1px solid #e2e8f0; margin-left: 4px; }
-        #pmDropdownMenu button { color: #1e293b; padding: 14px 16px; text-decoration: none; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 18px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
-        #pmDropdownMenu button:hover { background-color: #f0f4ff; color: #1a73e8; }
+body {
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 8px;
+  color: #222;
+  font-size: 16px;
+  overflow-x: hidden; /* ป้องกันจอเลื่อนหลุดขอบซ้ายขวา */
+}
 
-        .menu-dropdown.show .menu-content { display: block; }
+/* ⏳ ส่วนที่ 1: สไตล์แถบโหลดกลางจอและไอคอนวิ่ง */
+.custom-loader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  gap: 20px;
+  padding: 16px;
+}
 
-        #searchInput { width: 100%; padding: 14px 16px; font-size: 20px; border: 2px solid #cbd5e1; border-radius: 10px; outline: none; background: #fafafa; }
-        #searchInput:focus { border-color: #1a73e8; background: #fff; }
+.loader-track {
+  width: 90%;
+  max-width: 450px; /* ปรับให้ยืดหยุ่นตามหน้าจอแต่ไม่เกิน 450px */
+  height: 35px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
 
-        .repair-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
-        .repair-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 14px; }
-        .repair-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-        .repair-img { width: 75%; height: 300px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
-        .repair-text { font-size: 24px; color: #334155; line-height: 1.6; word-break: break-word; }
-        .repair-text strong { font-size: 20px; color: #0f172a; display: block; margin-bottom: 6px; }
-        
-        .pagination-bar { text-align: center; margin-top: 20px; }
-        .page-btn { background: #1a73e8; color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: 600; width: 100%; box-shadow: 0 2px 5px rgba(26,115,232,0.3); }
-        .page-btn.secondary { background: #64748b; }
-        
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
-        .category-card { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 20px 16px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .category-card h3 { font-size: 22px; margin: 0 0 6px 0; color: #1e293b; }
-        .category-card span { color: #64748b; font-size: 16px; font-weight: 500; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; display: inline-block; }
-        
-        .machine-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
-        .machine-card { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-        .machine-img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 8px; }
-        .machine-card h4 { font-size: 16px; margin: 0 0 4px 0; color: #0f172a; }
-        .machine-card p { margin: 0; font-size: 14px; color: #64748b; }
-        
-        .detail-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 16px; margin-bottom: 80px; }
-        .detail-row { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
-        .detail-label { font-size: 25px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
-        .detail-value { font-size: 30px; color: #1e293b; font-weight: 600; word-break: break-word; }
-        
-        .back-btn { background: #64748b; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-bottom: 16px; }
-        .fab-container { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 14px; z-index: 999; }
-        .fab-btn { background-color: #1a73e8; color: white; border: none; border-radius: 35px; padding: 18px 26px; font-size: 30px; font-weight: 750; box-shadow: 0 6px 16px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .fab-repair { background-color: #ea4335; }
-        .fab-history { background-color: #1a73e8; }
+.loader-bar {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 45%;
+  height: 100%;
+  background: #1a73e8;
+  border-radius: 6px;
+  animation: moveBar 1.2s infinite linear;
+}
+
+@keyframes moveBar {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+
+.loader-title {
+  font-size: clamp(20px, 5vw, 32px); /* ขนาดตัวหนังสือยืดหยุ่นตามจอ */
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+}
+
+.loader-subtitle {
+  font-size: clamp(14px, 3.5vw, 22px);
+  color: #64748b;
+  text-align: center;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 4px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
+  min-height: 90vh;
+}
+
+.header-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 14px;
+}
+
+.sticky-top-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 100;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  margin-bottom: 15px;
+}
+
+.header-title-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.menu-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-btn {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(26,115,232,0.3);
+}
+
+.menu-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  background-color: #ffffff;
+  min-width: 240px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  z-index: 999;
+  border: 1px solid #e2e8f0;
+}
+
+.menu-content button {
+  color: #1e293b;
+  padding: 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.menu-content button:hover {
+  background-color: #f0f4ff;
+  color: #1a73e8;
+}
+
+.sub-dropdown-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+#pmDropdownMenu {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background-color: #ffffff;
+  min-width: 260px;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+  z-index: 9999;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  margin-left: 4px;
+}
+
+#pmDropdownMenu button {
+  color: #1e293b;
+  padding: 14px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+#pmDropdownMenu button:hover {
+  background-color: #f0f4ff;
+  color: #1a73e8;
+}
+
+.menu-dropdown.show .menu-content {
+  display: block;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  outline: none;
+  background: #fafafa;
+}
+
+#searchInput:focus {
+  border-color: #1a73e8;
+  background: #fff;
+}
+
+.repair-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.repair-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+/* 🛠️ ส่วนที่ 2: การ์ดข้อมูลซ่อมบำรุง */
+.repair-card {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.repair-img {
+  width: 100%; /* ปรับให้เต็มความกว้างการ์ด ไม่ล้นจอ */
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.repair-text {
+  font-size: 16px; /* ปรับขนาดฟอนต์ให้อ่านง่ายบนมือถือทุกรุ่น */
+  color: #334155;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.repair-text strong {
+  font-size: 16px;
+  color: #0f172a;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.pagination-bar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.page-btn {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(26,115,232,0.3);
+}
+
+.page-btn.secondary {
+  background: #64748b;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.category-card {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.category-card h3 {
+  font-size: 18px;
+  margin: 0 0 6px 0;
+  color: #1e293b;
+}
+
+.category-card span {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.machine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.machine-card {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.machine-img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f1f5f9;
+  margin-bottom: 8px;
+}
+
+.machine-card h4 {
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  color: #0f172a;
+}
+
+.machine-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* 📋 ส่วนที่ 3: หน้ารายละเอียดเครื่องจักร */
+.detail-box {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+  margin-bottom: 90px;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-label {
+  font-size: 14px; /* ปรับขนาดหัวข้อให้เหมาะสมกับจอเล็ก */
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  font-size: 18px; /* ปรับขนาดค่าข้อมูลไม่ให้ใหญ่จนล้นจอ */
+  color: #1e293b;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.back-btn {
+  background: #64748b;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.fab-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+
+.fab-btn {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fab-repair {
+  background-color: #ea4335;
+}
+
+.fab-history {
+  background-color: #1a73e8;
+}
+
+/* 📱 Responsive เพิ่มเติมสำหรับจอแท็บเล็ต/คอมพิวเตอร์ขึ้นไป */
+@media (min-width: 768px) {
+  .repair-card {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .repair-img {
+    width: 240px;
+    height: 180px;
+  }
+}
     </style>
 </head>
 <body>
