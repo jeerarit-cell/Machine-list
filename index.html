@@ -464,42 +464,7 @@
       margin-bottom: 16px;
     }
 
-    .fab-container {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 999;
-    }
-
-    /* 🔘 ปุ่มลอย (กำหนดขนาดกว้าง-สูง หรือ Padding ให้คงที่ ไม่เพี้ยนตามจอ) */
-    .fab-btn {
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 30px; /* ความโค้งมนคงที่ */
-      padding: 12px 18px; /* กำหนดระยะ padding พอดีๆ */
-      font-size: 15px; /* ฟอนต์ขนาดคงที่ ไม่อ้างอิง vw */
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      white-space: nowrap; /* ป้องกันข้อความในปุ่มตัดบรรทัดแปลกๆ บนจอแคบ */
-      line-height: 1.2;
-    }
-
-    .fab-repair {
-      background-color: #ea4335;
-    }
-
-    .fab-history {
-      background-color: #1a73e8;
-    }
+    
 
     @media (max-width: 480px) {
       .repair-card {
@@ -564,15 +529,13 @@
     </div>
 
     <div id="viewDetail" style="display: none;">
-      <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
-      <h2>📋 รายละเอียดเครื่องจักร</h2>
-      <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #0f172a; background: #f1f5f9;">
-      <div id="detailContainer"></div>
-      <div class="fab-container">
-        <button class="fab-btn fab-history" onclick="viewMachineHistory()">📜 ประวัติซ่อมเครื่องนี้</button>
-        <button class="fab-btn fab-repair" onclick="openRepairForm()">🛠️ แจ้งซ่อมเครื่องนี้</button>
-      </div>
-    </div>
+  <button class="back-btn" onclick="backToMachines()">⬅️ กลับหน้ารายการ</button>
+  <button class="back-btn" style="background: #1a73e8; margin-bottom: 10px;" onclick="viewMachineHistory()">📜 ประวัติซ่อมเครื่องนี้</button>
+  <button class="back-btn" style="background: #ea4335; margin-bottom: 16px;" onclick="openRepairForm()">🛠️ แจ้งซ่อมเครื่องนี้</button>
+  <h2>📋 รายละเอียดเครื่องจักร</h2>
+  <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #0f172a; background: #f1f5f9;">
+  <div id="detailContainer"></div>
+</div>
 
      <div id="viewPmManuals" style="display: none;">
         <button class="back-btn" onclick="goBackFromPmManuals()">⬅️ ย้อนกลับ</button>
