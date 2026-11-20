@@ -476,6 +476,135 @@
         height: 180px;
       }
     }
+    .announcement-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 12px;
+}
+.announcement-modal {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  max-height: 88vh;
+  background: #e0f2fe;
+  border: 2px solid #0f172a;
+  border-radius: 14px;
+  padding: 46px 14px 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.announcement-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1.5px solid #0f172a;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+  z-index: 5;
+}
+.announcement-scroll-body {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+.announcement-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.announcement-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #0f172a;
+  background: #f8fafc;
+  display: none;
+}
+.announcement-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+.announcement-message {
+  margin: 0;
+  font-size: 15px;
+  color: #334155;
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+}
+.announcement-link-btn {
+  display: none;
+  text-align: center;
+  text-decoration: none;
+  background: #1a73e8;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+.announcement-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #e2e8f0;
+}
+.announcement-nav-btn {
+  background: #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.announcement-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.announcement-counter {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+.announcement-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+}
   </style>
 </head>
 <body>
@@ -504,6 +633,26 @@
       <h2>🏭 ระบบจัดการเครื่องจักร</h2>
       <input type="text" id="searchInput" placeholder="🔍 ค้นหารหัสเครื่องจักร หรือประเภทเครื่อง..." oninput="handleSearch(this.value)">
     </div>
+    <div id="announcementBackdrop" class="announcement-backdrop" onclick="handleAnnouncementBackdropClick(event)">
+  <div id="announcementModal" class="announcement-modal"
+       ontouchstart="handleAnnouncementTouchStart(event)"
+       ontouchend="handleAnnouncementTouchEnd(event)">
+    <button type="button" class="announcement-close" onclick="closeAnnouncementModal()" aria-label="ปิดประกาศ">✕</button>
+    <div id="announcementScrollBody" class="announcement-scroll-body">
+      <span class="announcement-badge">📢 ประกาศอัปเดต</span>
+      <img id="announcementImage" class="announcement-img" alt="รูปประกาศ">
+      <h3 id="announcementTitle" class="announcement-title"></h3>
+      <p id="announcementMessage" class="announcement-message"></p>
+      <a id="announcementLinkBtn" class="announcement-link-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <div id="announcementNav" class="announcement-nav">
+        <button type="button" id="announcementPrevBtn" class="announcement-nav-btn" onclick="changeAnnouncementSlide(-1)">◀ ก่อนหน้า</button>
+        <span id="announcementCounter" class="announcement-counter">1 / 1</span>
+        <button type="button" id="announcementNextBtn" class="announcement-nav-btn" onclick="changeAnnouncementSlide(1)">ถัดไป ▶</button>
+      </div>
+      <div id="announcementSwipeHint" class="announcement-hint">ปัดซ้ายหรือขวาเพื่อเลื่อนดูข่าวอื่น</div>
+    </div>
+  </div>
+</div>
 
     <div id="viewHome" style="display: none;">
       <div class="repair-section">
@@ -533,7 +682,7 @@
   <button class="back-btn" style="background: #1a73e8; margin-bottom: 10px;" onclick="viewMachineHistory()">📜 ประวัติซ่อมเครื่องนี้</button>
   <button class="back-btn" style="background: #ea4335; margin-bottom: 16px;" onclick="openRepairForm()">🛠️ แจ้งซ่อมเครื่องนี้</button>
   <h2>📋 รายละเอียดเครื่องจักร</h2>
-  <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; border: 1px solid #0f172a; background: #f1f5f9;">
+  <img id="detailMachineImage" src="" alt="รูปเครื่องจักร" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #0f172a; background: #f1f5f9;">
   <div id="detailContainer"></div>
 </div>
 
@@ -550,6 +699,11 @@
   <script>
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTL9uVrqse_9L2oE4-tV_ut56JcSp5aMvC4SYSnZmQl3VQPjfFiX8GQ-flqQQ_wuwPGQDAK4d-TNkdu/pub?output=csv';
     const REPAIR_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9avqhM-VL5XbwjE-zorCey1On-6ywCMyMykiauuRZ8aV190s5jjk1z6yYDmAmFP7901zQZxaQGBX/pub?output=csv';
+    const ANNOUNCEMENT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSTSH0ZonC6zx4esXe6ZPhQdNfjKUytPHzxkItuJ6w0xIfadqM2Z6A75de4J8rZxcVFR01JuhmhKJZX/pub?output=csv';
+let allAnnouncements = [];
+let currentAnnouncementIndex = 0;
+let announcementTouchStartX = 0;
+let announcementTouchStartY = 0;
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
     const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
     const REPAIR_FORM_BASE_URL = 'https://docs.google.com/forms/d/e/YOUR_GOOGLE_FORM_ID/viewform?entry.123456789=';
@@ -607,6 +761,7 @@
         document.getElementById('headerWrapper').style.display = 'flex';
         initHome();
         initTableTab();
+        loadAnnouncementData();
 
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search') || urlParams.get('id') || urlParams.get('code');
@@ -993,6 +1148,131 @@
       switchView('viewTable');
       document.getElementById('mainMenuDropdown').classList.remove('show');
     }
+
+   function loadAnnouncementData() {
+  if (!ANNOUNCEMENT_CSV_URL || ANNOUNCEMENT_CSV_URL === 'YOUR_ANNOUNCEMENT_CSV_URL_HERE') return;
+  Papa.parse(ANNOUNCEMENT_CSV_URL, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      const rows = Array.isArray(results.data) ? results.data : [];
+      allAnnouncements = rows.filter(row => {
+        const isActive = String(row['active'] || '').trim().toUpperCase() === 'TRUE';
+        const title = String(row['title'] || '').trim();
+        const message = String(row['message'] || '').trim();
+        return isActive && (title !== '' || message !== '');
+      });
+      if (allAnnouncements.length > 0) {
+        currentAnnouncementIndex = 0;
+        renderAnnouncementSlide();
+        document.getElementById('announcementBackdrop').style.display = 'flex';
+      }
+    },
+    error: function() {}
+  });
+}
+
+function resolveAnnouncementImageUrl(rawValue) {
+  const val = String(rawValue || '').trim();
+  if (!val) return '';
+  const driveMatch = val.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || val.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (driveMatch && driveMatch[1]) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+  }
+  return val;
+}
+
+function renderAnnouncementSlide() {
+  const item = allAnnouncements[currentAnnouncementIndex];
+  if (!item) return;
+
+  const titleEl = document.getElementById('announcementTitle');
+  const msgEl = document.getElementById('announcementMessage');
+  const imgEl = document.getElementById('announcementImage');
+  const linkEl = document.getElementById('announcementLinkBtn');
+  const navEl = document.getElementById('announcementNav');
+  const prevBtn = document.getElementById('announcementPrevBtn');
+  const nextBtn = document.getElementById('announcementNextBtn');
+  const counterEl = document.getElementById('announcementCounter');
+  const hintEl = document.getElementById('announcementSwipeHint');
+
+  titleEl.textContent = String(item['title'] || '').trim() || 'ประกาศ';
+  msgEl.textContent = String(item['message'] || '').trim();
+
+  const resolvedImg = resolveAnnouncementImageUrl(item['image']);
+  if (resolvedImg) {
+    imgEl.style.display = 'block';
+    imgEl.src = resolvedImg;
+    imgEl.onerror = function() {
+      imgEl.style.display = 'none';
+    };
+  } else {
+    imgEl.removeAttribute('src');
+    imgEl.style.display = 'none';
+  }
+
+  const linkUrl = String(item['link_url'] || '').trim();
+  const linkLabel = String(item['link_label'] || '').trim() || 'ดูรายละเอียดเพิ่มเติม';
+  if (linkUrl) {
+    linkEl.href = linkUrl;
+    linkEl.textContent = linkLabel;
+    linkEl.style.display = 'block';
+  } else {
+    linkEl.removeAttribute('href');
+    linkEl.style.display = 'none';
+  }
+
+  const total = allAnnouncements.length;
+  if (total > 1) {
+    navEl.style.display = 'flex';
+    counterEl.textContent = `${currentAnnouncementIndex + 1} / ${total}`;
+    prevBtn.disabled = currentAnnouncementIndex === 0;
+    nextBtn.disabled = currentAnnouncementIndex === total - 1;
+    hintEl.style.display = 'block';
+  } else {
+    navEl.style.display = 'none';
+    hintEl.style.display = 'none';
+  }
+}
+
+function changeAnnouncementSlide(delta) {
+  const nextIdx = currentAnnouncementIndex + delta;
+  if (nextIdx >= 0 && nextIdx < allAnnouncements.length) {
+    currentAnnouncementIndex = nextIdx;
+    renderAnnouncementSlide();
+  }
+}
+
+function closeAnnouncementModal() {
+  const backdrop = document.getElementById('announcementBackdrop');
+  if (backdrop) backdrop.style.display = 'none';
+}
+
+function handleAnnouncementBackdropClick(event) {
+  if (event.target && event.target.id === 'announcementBackdrop') {
+    closeAnnouncementModal();
+  }
+}
+
+function handleAnnouncementTouchStart(event) {
+  if (!event.touches || event.touches.length === 0) return;
+  announcementTouchStartX = event.touches[0].clientX;
+  announcementTouchStartY = event.touches[0].clientY;
+}
+
+function handleAnnouncementTouchEnd(event) {
+  if (!event.changedTouches || event.changedTouches.length === 0) return;
+  const dx = event.changedTouches[0].clientX - announcementTouchStartX;
+  const dy = event.changedTouches[0].clientY - announcementTouchStartY;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx < 0) {
+      changeAnnouncementSlide(1);
+    } else {
+      changeAnnouncementSlide(-1);
+    }
+  }
+} 
   </script>
 </body>
 </html>
