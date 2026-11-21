@@ -494,17 +494,23 @@
   background: #e0f2fe;
   border: 2px solid #0f172a;
   border-radius: 16px;
-  padding: 46px 12px 12px;
+  padding: 10px 12px 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
   display: flex;
   flex-direction: column;
+  gap: 8px;
   overflow: hidden;
   touch-action: pan-y;
 }
+.announcement-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+}
 .announcement-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  flex-shrink: 0;
   background: #f1f5f9;
   color: #0f172a;
   border: 1.5px solid #0f172a;
@@ -515,7 +521,6 @@
   font-weight: 700;
   cursor: pointer;
   line-height: 1;
-  z-index: 5;
 }
 .announcement-scroll-body {
   background: #ffffff;
@@ -528,15 +533,16 @@
   overflow-y: auto;
 }
 .announcement-badge {
-  display: inline-block;
-  align-self: flex-start;
-  background: #e0f2fe;
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
   color: #0369a1;
   border: 1px solid #7dd3fc;
   border-radius: 999px;
-  padding: 2px 10px;
-  font-size: 12px;
+  padding: 4px 12px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.2;
 }
 .announcement-img {
   width: 100%;
@@ -548,14 +554,14 @@
 }
 .announcement-title {
   margin: 0;
-  font-size: 18px;
+  font-size: clamp(19px, 4.5vw, 24px);
   font-weight: 700;
   color: #0f172a;
   line-height: 1.35;
 }
 .announcement-message {
   margin: 0;
-  font-size: 15px;
+  font-size: clamp(16px, 3.8vw, 18px);
   color: #334155;
   line-height: 1.5;
   white-space: pre-line;
@@ -636,11 +642,13 @@
   <div id="announcementModal" class="announcement-modal"
        ontouchstart="handleAnnouncementTouchStart(event)"
        ontouchend="handleAnnouncementTouchEnd(event)">
-    <button type="button" class="announcement-close" onclick="closeAnnouncementModal()" aria-label="ปิดประกาศ">✕</button>
+    <div class="announcement-top-bar">
+      <span id="announcementBadge" class="announcement-badge">📢 ประชาสัมพันธ์</span>
+      <button type="button" class="announcement-close" onclick="closeAnnouncementModal()" aria-label="ปิดประกาศ">✕</button>
+    </div>
     <div id="announcementScrollBody" class="announcement-scroll-body">
-      <span class="announcement-badge">📢 ประกาศอัปเดต</span>
       <img id="announcementImage" class="announcement-img" alt="รูปประกาศ">
-      <h3 id="announcementTitle" class="announcement-title"></h3>
+      
       <p id="announcementMessage" class="announcement-message"></p>
       <a id="announcementLinkBtn" class="announcement-link-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
       <div id="announcementNav" class="announcement-nav">
@@ -1158,7 +1166,6 @@ let announcementTouchStartY = 0;
       const rows = Array.isArray(results.data) ? results.data : [];
       allAnnouncements = rows.filter(row => {
         const isActive = String(row['active'] || '').trim().toUpperCase() === 'TRUE';
-        const title = String(row['title'] || '').trim();
         const message = String(row['message'] || '').trim();
         return isActive && (title !== '' || message !== '');
       });
@@ -1186,7 +1193,7 @@ function renderAnnouncementSlide() {
   const item = allAnnouncements[currentAnnouncementIndex];
   if (!item) return;
 
-  const titleEl = document.getElementById('announcementTitle');
+  
   const msgEl = document.getElementById('announcementMessage');
   const imgEl = document.getElementById('announcementImage');
   const linkEl = document.getElementById('announcementLinkBtn');
@@ -1196,7 +1203,7 @@ function renderAnnouncementSlide() {
   const counterEl = document.getElementById('announcementCounter');
   const hintEl = document.getElementById('announcementSwipeHint');
 
-  titleEl.textContent = String(item['title'] || '').trim() || 'ประกาศ';
+  
   msgEl.textContent = String(item['message'] || '').trim();
 
   const resolvedImg = resolveAnnouncementImageUrl(item['image']);
