@@ -545,9 +545,13 @@
   line-height: 1.2;
 }
 .announcement-img {
-  width: 100%;
-  max-height: 36dvh;
-  object-fit: cover;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 48dvh;
+  margin: 0 auto;
+  object-fit: contain;
   border-radius: 10px;
   border: 1px solid #0f172a;
   background: #f8fafc;
@@ -1167,7 +1171,7 @@ let announcementTouchStartY = 0;
       allAnnouncements = rows.filter(row => {
         const isActive = String(row['active'] || '').trim().toUpperCase() === 'TRUE';
         const message = String(row['message'] || '').trim();
-        return isActive && (title !== '' || message !== '');
+        return isActive && (message !== '');
       });
       if (allAnnouncements.length > 0) {
         currentAnnouncementIndex = 0;
