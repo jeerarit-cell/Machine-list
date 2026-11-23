@@ -105,15 +105,20 @@
     }
 
     .sticky-top-wrapper {
-      position: sticky;
-      top: 0;
-      background-color: #ffffff;
-      z-index: 100;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      margin-bottom: 15px;
-    }
+  position: sticky;
+  top: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(125, 211, 252, 0.55) 0%, transparent 45%),
+    radial-gradient(circle at 82% 28%, rgba(216, 180, 254, 0.52) 0%, transparent 48%),
+    radial-gradient(circle at 30% 82%, rgba(167, 243, 208, 0.55) 0%, transparent 46%),
+    radial-gradient(circle at 78% 78%, rgba(251, 207, 232, 0.50) 0%, transparent 45%),
+    linear-gradient(135deg, #e0f2fe 0%, #eef2ff 48%, #ecfdf5 100%);
+  z-index: 100;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 15px;
+}
 
     .header-title-area {
       display: flex;
