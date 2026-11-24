@@ -13,7 +13,12 @@
     }
 
     body {
-      background-color: #f0f2f5;
+      background:
+  radial-gradient(circle at 82% 22%, rgba(56, 189, 248, 0.34), transparent 44%),
+  radial-gradient(circle at 18% 28%, rgba(168, 85, 247, 0.28), transparent 46%),
+  radial-gradient(circle at 72% 82%, rgba(45, 212, 191, 0.26), transparent 45%),
+  radial-gradient(circle at 24% 78%, rgba(244, 114, 182, 0.22), transparent 48%),
+  linear-gradient(315deg, #e0f2fe 0%, #eef2ff 48%, #ecfdf5 100%);
       margin: 0;
       padding: 8px;
       color: #222;
@@ -86,9 +91,15 @@
     .container {
       max-width: 100%;
       margin: 0 4px;
-      background: #ffffff;
+      background:
+  radial-gradient(circle at 82% 22%, rgba(56, 189, 248, 0.34), transparent 44%),
+  radial-gradient(circle at 18% 28%, rgba(168, 85, 247, 0.28), transparent 46%),
+  radial-gradient(circle at 72% 82%, rgba(45, 212, 191, 0.26), transparent 45%),
+  radial-gradient(circle at 24% 78%, rgba(244, 114, 182, 0.22), transparent 48%),
+  linear-gradient(315deg, #e0f2fe 0%, #eef2ff 48%, #ecfdf5 100%);
       padding: 16px;
       border-radius: 8px;
+      border: 1.75px solid rgba(15, 23, 42, 0.22);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
       position: relative;
       min-height: 90vh;
@@ -116,6 +127,7 @@
   z-index: 100;
   padding: 10px 12px;
   border-radius: 10px;
+  border: 1.75px solid rgba(15, 23, 42, 0.22);    
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   margin-bottom: 15px;
 }
@@ -148,36 +160,43 @@
     }
 
     .menu-content {
-      display: none;
-      position: absolute;
-      left: 0;
-      background-color: #ffffff;
-      min-width: 240px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      border-radius: 10px;
-      z-index: 999;
-      border: 1px solid #0f172a;
-    }
+  display: none;
+  position: absolute;
+  left: 0;
+  background-color: #e0f2fe;
+  min-width: 240px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  z-index: 999;
+  border: 1px solid #0f172a;
+  overflow: hidden;
+}
 
-    .menu-content button {
-      color: #1e293b;
-      padding: 16px;
-      text-decoration: none;
-      display: block;
-      width: 100%;
-      text-align: left;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: 600;
-      border-bottom: 1px solid #f1f5f9;
-    }
+.menu-content button {
+  color: #1e293b;
+  padding: 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.12);
+  transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
 
-    .menu-content button:hover {
-      background-color: #f0f4ff;
-      color: #1a73e8;
-    }
+.menu-content button:last-child {
+  border-bottom: none;
+}
+
+.menu-content button:hover {
+  background-color: #bae6fd;
+  color: #0f172a;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.9), inset 0 0 8px rgba(224, 242, 254, 0.95);
+}
 
     .menu-dropdown.show .menu-content {
       display: block;
@@ -438,7 +457,7 @@
     }
     .detail-machine-img {
   display: block;
-  width: 100%;
+  width: 90%;
   max-width: 100%;
   height: auto;
   max-height: min(62dvh, 480px);
@@ -674,9 +693,8 @@
             <div class="menu-content">
               <button onclick="window.location.reload()">🏠 หน้าแรก (ข้อมูลการซ่อม)</button>
               <button onclick="openTableMenu()">📊 ตารางประเภทเครื่องจักร</button>
-              <button onclick="openPmManualsView()" style="color: #1a73e8; font-weight: bold;">
-                📖 คู่มือการบำรุงรักษา (PM)
-              </button>
+              <button onclick="openPmManualsView()">📖 คู่มือการบำรุงรักษา (PM)</button>
+              
             </div>
           </div>
         </div>
