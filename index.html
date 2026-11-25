@@ -1251,32 +1251,46 @@
       return match && match[1] ? match[1] : '';
     }
 
-    function resolveAnnouncementImageUrl(rawValue) {
-      const val = String(rawValue || '').trim();
-      if (!val) return '';
-      const driveId = extractDriveFileId(val);
-      if (driveId) {
-        return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
-      }
-      return val;
-    }
+    function isVideoAnnouncement(item, rawMediaValue) {
+  const titleText = String((item && item['title']) || '').trim();
+  const rawVal = String(rawMediaValue || '').trim();
+  const hasVideoKeywordInTitle = /(vdo|วีดีโอ|วิดีโอ|video)/i.test(titleText);
+  const isDirectVideoFile = /^https?:\/\//i.test(rawVal) && /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i.test(rawVal);
 
-    function resolveAnnouncementClickTarget(item, rawMediaValue) {
-      const linkUrl = String((item && item['link_url']) || '').trim();
-      if (linkUrl) return linkUrl;
+  return hasVideoKeywordInTitle || isDirectVideoFile;
+}
 
-      const rawVal = String(rawMediaValue || '').trim();
-      if (/^https?:\/\//i.test(rawVal) && /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i.test(rawVal)) {
-        return rawVal;
-      }
+function resolveAnnouncementImageUrl(rawValue, item) {
+  const val = String(rawValue || '').trim();
+  if (!val) return '';
 
-      const driveId = extractDriveFileId(rawVal);
-      if (driveId && /(วีดีโอ|วิดีโอ|video)/i.test(String((item && item['message']) || '') + ' ' + rawVal)) {
-        return `https://drive.google.com/file/d/${driveId}/preview`;
-      }
+  // ถ้าไม่ใช่สื่อวิดีโอ ให้ปัดเป็นรูปภาพทั้งหมด
+  const driveId = extractDriveFileId(val);
+  if (driveId) {
+    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
+  }
+  return val;
+}
 
-      return '';
-    }
+function resolveAnnouncementClickTarget(item, rawMediaValue) {
+  const linkUrl = String((item && item['link_url']) || '').trim();
+  if (linkUrl) return linkUrl;
+
+  const rawVal = String(rawMediaValue || '').trim();
+  if (/^https?:\/\//i.test(rawVal) && /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i.test(rawVal)) {
+    return rawVal;
+  }
+
+  const titleText = String((item && item['title']) || '').trim();
+  const driveId = extractDriveFileId(rawVal);
+
+  // เช็กเฉพาะในคอลัมน์ title เท่านั้น ถ้าไม่มีคำว่า vdo/วีดีโอ/วิดีโอ/video จะไม่เข้าเงื่อนไขวิดีโอ
+  if (driveId && /(vdo|วีดีโอ|วิดีโอ|video)/i.test(titleText)) {
+    return `https://drive.google.com/file/d/${driveId}/preview`;
+  }
+
+  return '';
+}
 
     function renderAnnouncementSlide() {
       const item = allAnnouncements[currentAnnouncementIndex];
