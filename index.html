@@ -778,17 +778,37 @@
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweERcl6FoWQe5al1S7yLgkwgETGnlJNkW1KGd1OABQIKP2P5Zu1kHc3EokdFMNvy9P/exec';
     const REPAIR_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxicQ9NxoOsH1aeMAcYNzA8Pcafk3o9PzQ_aTmrtpyN6QKfMf76YaOMT4V9V9WsnD46/exec';
     const REPAIR_FORM_BASE_URL = 'https://docs.google.com/forms/d/e/YOUR_GOOGLE_FORM_ID/viewform?entry.123456789=';
+    const PM_MANUAL_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQhejBSKGtPhVhYFcKintjBCaVso17cJNEZJs2uPSgw3dnToqhkPyaMjrycvvVrJSk4lBEfG4_Mmchm/pub?output=csv';
+let pmManualsData = [];
+    function loadPmManualsData() {
+  if (!PM_MANUAL_CSV_URL) {
+    pmManualsData = [];
+    return;
+  }
 
-    const PM_MANUALS = [
-      { name: '🛠 จักรเข็มเดี่ยว (PM)', url: 'https://drive.google.com/file/d/10mKKlyOf9PSVmj4eGhomViP4s7Xvl-F4/view?usp=sharing' },
-      { name: '🛠 จักรสอย (PM)', url: 'https://drive.google.com/file/d/1eweo7Qd1DipR0CTlv-ksubNzKJRb_G0l/view?usp=sharing' },
-      { name: '🛠 จักรโพ้ง (PM)', url: 'https://drive.google.com/file/d/1jUU-0CcWuvqRkUKKb-sNGf4zlGPLSJnP/view?usp=sharing' },
-      { name: '🛠 จักรโพ้งพรม(PM)', url: 'https://drive.google.com/file/d/1dSOmbUvHRNa6FBSk251899V2jpN5if0f/view?usp=sharing' },
-      { name: '🛠 เครื่องตัดผ้า(อุลตร้าโซนิค)', url: 'https://drive.google.com/file/d/16QCMlfLu1AaPPth9C_vGETj7u7cVCyQW/view?usp=sharing' },
-      { name: '🛠 เครื่องตัดเมจิกเทป (PM)', url: 'https://drive.google.com/file/d/1bL4yoMjKBMT9EM9AW6c78LYGkSbBVmKX/view?usp=sharing' },
-      { name: '🛠 เครื่องตรวจโลหะ(PM)', url: 'https://drive.google.com/file/d/1GSFFj1FY3QDOwjk2ZdSkUp2JWAO63HQj/view?usp=sharing' },
-      { name: '🛠 เครื่องซีลด์ถุง A.C.MASTER(PM)', url: 'https://drive.google.com/file/d/1ofnAY_G3y5YnlwttyaGKd8jLYJzCo2zq/view?usp=sharing' }
-    ];
+  Papa.parse(PM_MANUAL_CSV_URL, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      const rows = Array.isArray(results.data) ? results.data : [];
+      pmManualsData = rows
+        .filter(row => {
+          const isActive = String(row['active'] || '').trim().toUpperCase() === 'TRUE';
+          const title = String(row['title'] || '').trim();
+          const url = String(row['url'] || '').trim();
+          return isActive && title !== '' && url !== '';
+        })
+        .map(row => ({
+          name: String(row['title'] || '').trim(),
+          url: String(row['url'] || '').trim()
+        }));
+    },
+    error: function() {
+      pmManualsData = [];
+    }
+  });
+}
 
     let allMachines = [];
     let allRepairs = [];
@@ -833,6 +853,7 @@
         initHome();
         initTableTab();
         loadAnnouncementData();
+        loadPmManualsData();
 
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search') || urlParams.get('id') || urlParams.get('code');
@@ -952,37 +973,37 @@
     }
 
     function renderPmManuals(keyword = '') {
-      const container = document.getElementById('pmManualContainer');
-      const countEl = document.getElementById('pmManualCount');
-      if (!container) return;
+  const container = document.getElementById('pmManualContainer');
+  const countEl = document.getElementById('pmManualCount');
+  if (!container) return;
 
-      const query = keyword.trim().toLowerCase();
-      const filtered = query
-        ? PM_MANUALS.filter(item => (item.name || '').toLowerCase().includes(query))
-        : PM_MANUALS;
+  const query = keyword.trim().toLowerCase();
+  const filtered = query
+    ? pmManualsData.filter(item => (item.name || '').toLowerCase().includes(query))
+    : pmManualsData;
 
-      if (countEl) {
-        countEl.textContent = `(${filtered.length} รายการ)`;
-      }
+  if (countEl) {
+    countEl.textContent = `(${filtered.length} รายการ)`;
+  }
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<p style="text-align: center; grid-column: 1 / -1; padding: 24px; color: #64748b;">ไม่พบคู่มือ PM ที่ค้นหา</p>`;
-        return;
-      }
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="text-align: center; grid-column: 1 / -1; padding: 24px; color: #64748b;">ไม่พบคู่มือ PM ที่เปิดใช้งาน</p>`;
+    return;
+  }
 
-      container.innerHTML = filtered.map(item => `
-        <div class="pm-card" title="${item.name}" onclick="openPmManualLink('${encodeURIComponent(item.url)}')">
-          ${item.name}
-        </div>
-      `).join('');
-    }
+  container.innerHTML = filtered.map(item => `
+    <div class="pm-card" title="${item.name}" onclick="openPmManualLink('${encodeURIComponent(item.url)}')">
+      ${item.name}
+    </div>
+  `).join('');
+}
 
     function openPmManualLink(encodedUrl) {
-      const url = decodeURIComponent(encodedUrl);
-      if (url) {
-        window.open(url, '_blank');
-      }
-    }
+  const url = decodeURIComponent(encodedUrl);
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
 
     function goBackFromPmManuals() {
       switchView(lastActiveView || 'viewHome');
