@@ -445,6 +445,45 @@
       font-size: 14px;
       color: #64748b;
     }
+    /* สถานะการ์ดเครื่องจักรจากคอลัมน์ "หมายเหตุ" */
+    .machine-card--moved {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      border-width: 1.5px;
+    }
+
+    .machine-card--cancelled {
+      background: #e2e8f0;
+      border-color: #64748b;
+      border-width: 1.5px;
+    }
+
+    .machine-note-box {
+      margin-top: 8px;
+      padding: 5px 7px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      border-radius: 7px;
+      font-size: clamp(11px, 2.8vw, 13px);
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: center;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .machine-note-box--moved {
+      background: #bae6fd;
+      color: #0c4a6e;
+      border: 1px solid #0284c7;
+    }
+
+    .machine-note-box--cancelled {
+      background: #cbd5e1;
+      color: #1e293b;
+      border: 1px solid #64748b;
+    }
 
     /* 📋 ส่วนที่ 3: หน้ารายละเอียดเครื่องจักร */
     .detail-box {
@@ -890,11 +929,13 @@ let pmManualsData = [];
 
       container.innerHTML = filtered.map(m => {
         const id = m['รหัสเครื่องจักร'] || 'No ID';
+        const noteInfo = getMachineNoteDisplay(m['หมายเหตุ']);
         return `
-          <div class="machine-card" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
+          <div class="machine-card ${noteInfo.cardClass}" onclick="showDetail('${id}', '${imageCache[id] || ''}')">
             <img id="search-img-${id}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img">
             <h4>${id}</h4>
             <p>${m['ประเภทเครื่องจักร'] || '-'}</p>
+            ${noteInfo.boxHtml}
           </div>
         `;
       }).join('');
@@ -1100,19 +1141,53 @@ let pmManualsData = [];
         }
       } catch (e) {}
     }
+    function getMachineNoteDisplay(noteRaw) {
+      const text = String(noteRaw || '').trim();
+      if (!text) {
+        return { cardClass: '', boxHtml: '' };
+      }
+
+      // เช็กกลุ่ม "ยกเลิก / หมดสภาพ" ก่อน กันกรณีมีคำว่า "ยกเลิกการย้าย"
+      const isCancelled = /(ยกเลิก|หมดสภาพ)/.test(text);
+      if (isCancelled) {
+        return {
+          cardClass: 'machine-card--cancelled',
+          boxHtml: `<div class="machine-note-box machine-note-box--cancelled">${text}</div>`
+        };
+      }
+
+      // เช็กกลุ่ม "ย้าย"
+      const isMoved = /ย้าย/.test(text);
+      if (isMoved) {
+        return {
+          cardClass: 'machine-card--moved',
+          boxHtml: `<div class="machine-note-box machine-note-box--moved">${text}</div>`
+        };
+      }
+
+      // กรณีมีหมายเหตุอื่นที่ไม่เข้า 2 กลุ่มนี้ ให้แสดงกรอบกลางๆ ไม่เปลี่ยนสีการ์ดหลัก
+      return {
+        cardClass: '',
+        boxHtml: `<div class="machine-note-box" style="background: rgba(255,255,255,0.72); color: #0f172a; border: 1px solid #0f172a;">${text}</div>`
+      };
+    }
 
     function selectCategory(cat) {
       currentCategory = cat;
       switchView('viewMachines');
       document.getElementById('categoryTitle').innerText = `ประเภท: ${cat}`;
       const filtered = allMachines.filter(m => (m['ประเภทเครื่องจักร'] || 'ไม่ระบุ') === cat);
-      document.getElementById('machineContainer').innerHTML = filtered.map(m => `
-        <div class="machine-card" onclick="showDetail('${m['รหัสเครื่องจักร']}', '')">
-          <img id="img-${m['รหัสเครื่องจักร']}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img">
-          <h4>${m['รหัสเครื่องจักร']}</h4>
-          <p>${m['รุ่น/Model'] || '-'}</p>
-        </div>
-      `).join('');
+      document.getElementById('machineContainer').innerHTML = filtered.map(m => {
+        const noteInfo = getMachineNoteDisplay(m['หมายเหตุ']);
+        return `
+          <div class="machine-card ${noteInfo.cardClass}" onclick="showDetail('${m['รหัสเครื่องจักร']}', '')">
+            <img id="img-${m['รหัสเครื่องจักร']}" src="https://via.placeholder.com/200x130?text=Loading..." class="machine-img">
+            <h4>${m['รหัสเครื่องจักร']}</h4>
+            <p>${m['รุ่น/Model'] || '-'}</p>
+            ${noteInfo.boxHtml}
+          </div>
+        `;
+      }).join('');
       filtered.forEach(m => {
         if (m['รหัสเครื่องจักร']) fetchMachineImage(m['รหัสเครื่องจักร']);
       });
